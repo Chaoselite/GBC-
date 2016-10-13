@@ -1,0 +1,24 @@
+# depslib dependency file v1.0
+1476210853 source:c:\users\chaos\documents\codeblocks\projects\gbc++\src\cgb_cpu.cpp
+	"CGB_CPU.h"
+
+1476293426 c:\users\chaos\documents\codeblocks\projects\gbc++\include\cgb_cpu.h
+	"Types.h"
+
+1476293414 c:\users\chaos\documents\codeblocks\projects\gbc++\include\types.h
+	<stdint.h>
+
+1476297824 source:c:\users\chaos\documents\codeblocks\projects\gbc++\main.cpp
+	<iostream>
+	"CGB_CPU.h"
+	"CartLoader.h"
+
+1476296127 c:\users\chaos\documents\codeblocks\projects\gbc++\include\cartloader.h
+	<fstream>
+	<iostream>
+	<string>
+	"Types.h"
+
+1476298436 source:c:\users\chaos\documents\codeblocks\projects\gbc++\src\cartloader.cpp
+	"CartLoader.h"
+
