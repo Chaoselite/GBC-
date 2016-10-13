@@ -21,12 +21,12 @@ public:
     CGB_CPU();
     virtual ~CGB_CPU();
 
-    int16_t  SP =0;
-    int16_t  PC =0;
-    int16_t  addr_bus_16 =0;
-    int8_t   addr_bus_8 =0;
-    int8_t   reg_status =0; //I think this is the flags register
-    int8_t   registers[7] = {0};
+    uint16_t  SP =0;
+    uint16_t  PC =0;
+    uint16_t  addr_bus_16 =0;
+    char   addr_bus_8 =0;
+    char   reg_status =0; //I think this is the flags register
+    char  registers[7] = {0};
 
     float   ClockSpd = 4.194304;
 

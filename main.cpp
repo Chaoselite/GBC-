@@ -1,6 +1,7 @@
 #include <iostream>
 #include "CGB_CPU.h"
 #include "CartLoader.h"
+#include "MemoryModule.h"
 using namespace std;
 
 int main()
@@ -8,6 +9,7 @@ int main()
     std::string ROMFILEPATH;
     CGB_CPU cpu;
     CartLoader CL;
+    MemoryModule RAM(8191);
     std::cout << "Select a ROM to load" << std::endl;
     std::cin >> ROMFILEPATH;
     CL.Load(ROMFILEPATH);

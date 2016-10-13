@@ -1,14 +1,14 @@
 # depslib dependency file v1.0
-1476210853 source:c:\users\chaos\documents\codeblocks\projects\gbc++\src\cgb_cpu.cpp
+1476374711 source:c:\users\chaos\documents\codeblocks\projects\gbc++\src\cgb_cpu.cpp
 	"CGB_CPU.h"
 
-1476293426 c:\users\chaos\documents\codeblocks\projects\gbc++\include\cgb_cpu.h
+1476374591 c:\users\chaos\documents\codeblocks\projects\gbc++\include\cgb_cpu.h
 	"Types.h"
 
 1476293414 c:\users\chaos\documents\codeblocks\projects\gbc++\include\types.h
 	<stdint.h>
 
-1476297824 source:c:\users\chaos\documents\codeblocks\projects\gbc++\main.cpp
+1476371209 source:c:\users\chaos\documents\codeblocks\projects\gbc++\main.cpp
 	<iostream>
 	"CGB_CPU.h"
 	"CartLoader.h"
@@ -21,4 +21,9 @@
 
 1476298436 source:c:\users\chaos\documents\codeblocks\projects\gbc++\src\cartloader.cpp
 	"CartLoader.h"
+
+1476375140 source:c:\users\chaos\documents\codeblocks\projects\gbc++\src\memorymodule.cpp
+	"MemoryModule.h"
+
+1476375094 c:\users\chaos\documents\codeblocks\projects\gbc++\include\memorymodule.h
 

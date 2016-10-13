@@ -9,3 +9,8 @@ CGB_CPU::~CGB_CPU()
 {
     //dtor
 }
+
+void CGB_CPU::Run(void)
+{
+
+}
