@@ -1,6 +1,8 @@
 #ifndef CGB_CPU_H
 #define CGB_CPU_H
+#include <assert.h>
 #include "Types.h"
+#include <iostream>
 
 enum REG_TYPE
 {
@@ -23,14 +25,20 @@ public:
 
     uint16_t  SP =0;
     uint16_t  PC =0;
-    uint16_t  addr_bus_16 =0;
-    char   addr_bus_8 =0;
-    char   reg_status =0; //I think this is the flags register
+    char  addr_bus_16 =0; // pretty sure we don't need this
+    char   addr_bus_8 =0; //this
+    char   reg_status =0; //or this but we'll see
     char  registers[7] = {0};
 
     float   ClockSpd = 4.194304;
 
     void Run(void);
+
+private:
+
+    void ExecOP(uint16_t OP, char Data);
+
+    void ExecCBOP(uint16_t OP, char Data);
 
 };
 

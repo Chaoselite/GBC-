@@ -39,10 +39,12 @@
 		</Compiler>
 		<Unit filename="include/CGB_CPU.h" />
 		<Unit filename="include/CartLoader.h" />
+		<Unit filename="include/MemoryModule.h" />
 		<Unit filename="include/Types.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/CGB_CPU.cpp" />
 		<Unit filename="src/CartLoader.cpp" />
+		<Unit filename="src/MemoryModule.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

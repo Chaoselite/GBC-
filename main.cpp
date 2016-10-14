@@ -7,17 +7,19 @@ using namespace std;
 int main()
 {
     std::string ROMFILEPATH;
+    std::string title;
     CGB_CPU cpu;
     CartLoader CL;
     MemoryModule RAM(8191);
+
+    cpu.Run();
     std::cout << "Select a ROM to load" << std::endl;
     std::cin >> ROMFILEPATH;
     CL.Load(ROMFILEPATH);
-    std::string title;
+
     for (int i = 0; i != 10; i++)
     {
         title += CL.CHead->Title[i];
     }
-    cout << title << endl;
     return 0;
 }
