@@ -1,5 +1,6 @@
 #ifndef MEMORYMODULE_H
 #define MEMORYMODULE_H
+#include "Types.h"
 
 
 class MemoryModule
@@ -8,9 +9,9 @@ public:
     MemoryModule(const unsigned Size);
     virtual ~MemoryModule();
 
-    char ReadFromAddress(char Address);
+    char ReadFromAddress(int16_t Address);
 
-    void WriteToAddress(char Address, char Data);
+    void WriteToAddress(int16_t Address, char Data);
 
 private:
 

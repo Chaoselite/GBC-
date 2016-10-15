@@ -17,7 +17,7 @@ void CartLoader::Load(std::string filepath)
     is.open (filepath, std::ifstream::binary );
     if(!is)
     {
-            std::cout<<"File couldn't open"<<std::endl;
+            std::cout<<"File couldn't open Cartridge"<<std::endl;
 
     }
     else

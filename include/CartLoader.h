@@ -33,7 +33,7 @@ public:
 
     void Load(std::string filepath);
 
-    char *Cartridge = new char[8000000];
+    char *Cartridge = new char[8388607]; //8MB max
     Header *CHead;
 
 private:

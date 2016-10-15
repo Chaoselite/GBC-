@@ -10,12 +10,12 @@ MemoryModule::~MemoryModule()
     delete [] Memory;
 }
 
-char MemoryModule::ReadFromAddress(char Address)
+char MemoryModule::ReadFromAddress(int16_t Address)
 {
     return Memory[Address];
 }
 
-void MemoryModule::WriteToAddress(char Address, char Data)
+void MemoryModule::WriteToAddress(int16_t Address, char Data)
 {
     Memory[Address] = Data;
 }

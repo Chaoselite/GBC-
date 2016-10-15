@@ -2,7 +2,9 @@
 #define CGB_CPU_H
 #include <assert.h>
 #include "Types.h"
+#include <fstream>
 #include <iostream>
+#include "MemoryModule.h"
 
 enum REG_TYPE
 {
@@ -23,22 +25,32 @@ public:
     CGB_CPU();
     virtual ~CGB_CPU();
 
-    uint16_t  SP =0;
-    uint16_t  PC =0;
-    char  addr_bus_16 =0; // pretty sure we don't need this
-    char   addr_bus_8 =0; //this
-    char   reg_status =0; //or this but we'll see
-    char  registers[7] = {0};
+    void SetCartridge(char *Cart);
 
-    float   ClockSpd = 4.194304;
+    void SetMemory(MemoryModule *Mem);
+
+    void LoadBIOS(std::string Filepath);
 
     void Run(void);
 
+    uint16_t  SP =0x0000;
+    uint16_t  PC =0x0000;
+    char  registers[7] = {0};
+    float   ClockSpd = 4.194304;
+
 private:
+
+    char Fetch(uint16_t ADDR);
 
     void ExecOP(uint16_t OP, char Data);
 
     void ExecCBOP(uint16_t OP, char Data);
+
+    char *BIOS;
+
+    char *Cartridge;
+
+    MemoryModule *Memory;
 
 };
 
