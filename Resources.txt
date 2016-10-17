@@ -8,4 +8,6 @@ http://hitmen.c02.at/files/releases/gbc/gbc_memorymap.txt - Memory Maps
 
 http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html - OPCodes
 
+http://www.z80.info/z80syntx.htm#XOR -z80 opcode explanations
+
 

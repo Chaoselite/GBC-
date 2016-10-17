@@ -41,6 +41,7 @@
 		<Unit filename="include/CartLoader.h" />
 		<Unit filename="include/MemoryModule.h" />
 		<Unit filename="include/Types.h" />
+		<Unit filename="include/Utilities.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/CGB_CPU.cpp" />
 		<Unit filename="src/CartLoader.cpp" />

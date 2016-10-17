@@ -39,28 +39,216 @@ void CGB_CPU::LoadBIOS(std::string Filepath)
 
 void CGB_CPU::Run(void)
 {
-    ExecOP(0xcb, 0x00);
-}
-
-char CGB_CPU::Fetch(uint16_t ADDR)
-{
-
-}
-
-void CGB_CPU::ExecOP(uint16_t OP, char Data)
-{
-    switch (OP)
+    while(isRunning)
     {
-    case 0xcb:
-        std::cout << "CB OP" << std::endl;
-        break;
-    default :
-        std::cout << "Invalid OP: " << OP << std::endl;
-        break;
+        ExecOP(Fetch());
     }
 }
 
-void CGB_CPU::ExecCBOP(uint16_t OP, char Data)
+uint8_t CGB_CPU::Fetch(void)
+{
+   uint8_t Data = Cartridge[PC];
+   PC++;
+   if (PC == 0x1ff)
+   {
+       isRunning = false;
+   }
+   return Data;
+}
+
+void CGB_CPU::ExecOP(uint8_t OP)
+{
+    uint16_t data16a = 0;
+    uint16_t data16b = 0;
+    uint8_t data8h = 0;
+    uint8_t data8l = 0;
+
+    switch (OP)
+    {
+    case 0x00:
+        std::cout << "NOP" << std::endl;
+    break;
+
+    case 0x01:
+        registers[REG_TYPE::C] = Fetch();
+        registers[REG_TYPE::B] = Fetch();
+    break;
+
+    case 0x02:
+        data8h = registers[REG_TYPE::B];
+        data8l = registers[REG_TYPE::C];
+        data16a = concat16(data8h, data8l);
+
+        Memory->WriteToAddress(data16a, registers[REG_TYPE::A]);
+    break;
+
+    case 0x03:
+        data8h = registers[REG_TYPE::B];
+        data8l = registers[REG_TYPE::C];
+        data16a = concat16(data8h, data8l);
+        data16a++;
+        registers[REG_TYPE::B] = trunc8high(data16a);
+        registers[REG_TYPE::C] = trunc8low(data16a);
+
+    break;
+
+    case 0x04:
+
+    break;
+
+    case 0x05:
+
+    break;
+
+    case 0x06:
+        registers[REG_TYPE::B] = Fetch();
+
+    break;
+
+    case 0x07:
+
+    break;
+
+    case 0x08:
+        data8l = Fetch();
+        data8h = Fetch();
+        data16a = concat16(data8h, data8l);
+        Memory->WriteToAddress(data16a, SP);
+
+    break;
+
+    case 0x09:
+
+    break;
+
+    case 0x0a:
+        data16a = concat16(registers[REG_TYPE::B], registers[REG_TYPE::C]);
+        registers[REG_TYPE::A] = Memory->ReadFromAddress(data16a);
+    break;
+
+    case 0x0b:
+        data8h = registers[REG_TYPE::B];
+        data8l = registers[REG_TYPE::C];
+        data16a = concat16(data8h, data8l);
+        data16a--;
+        registers[REG_TYPE::B] = trunc8high(data16a);
+        registers[REG_TYPE::C] = trunc8low(data16a);
+
+    break;
+
+    case 0x0c:
+
+    break;
+
+    case 0x0d:
+
+    break;
+
+    case 0x0e:
+        registers[REG_TYPE::C] = Fetch();
+    break;
+
+    case 0x0f:
+
+    break;
+
+    case 0x10:
+        //staph
+    break;
+
+    case 0x11:
+        registers[REG_TYPE::E] = Fetch();
+        registers[REG_TYPE::D] = Fetch();
+    break;
+
+    case 0x12:
+        data8h = registers[REG_TYPE::D];
+        data8l = registers[REG_TYPE::E];
+        data16a = concat16(data8h, data8l);
+
+        Memory->WriteToAddress(data16a, registers[REG_TYPE::A]);
+    break;
+
+    case 0x13:
+        data8h = registers[REG_TYPE::D];
+        data8l = registers[REG_TYPE::E];
+        data16a = concat16(data8h, data8l);
+        data16a++;
+        registers[REG_TYPE::B] = trunc8high(data16a);
+        registers[REG_TYPE::C] = trunc8low(data16a);
+
+    break;
+
+    case 0x14:
+
+    break;
+
+    case 0x15:
+
+    break;
+
+    case 0x16:
+        registers[REG_TYPE::D] = Fetch();
+
+    break;
+
+    case 0x17:
+
+    break;
+
+    case 0x18:
+        int8_t r8 = Fetch();
+        PC += r8;
+
+    break;
+
+    case 0x19:
+
+    break;
+
+    case 0x1a:
+        data16a = concat16(registers[REG_TYPE::D], registers[REG_TYPE::E]);
+        registers[REG_TYPE::A] = Memory->ReadFromAddress(data16a);
+    break;
+
+    case 0x1b:
+        data8h = registers[REG_TYPE::D];
+        data8l = registers[REG_TYPE::E];
+        data16a = concat16(data8h, data8l);
+        data16a--;
+        registers[REG_TYPE::B] = trunc8high(data16a);
+        registers[REG_TYPE::C] = trunc8low(data16a);
+
+    break;
+
+    case 0x1c:
+
+    break;
+
+    case 0x1d:
+
+    break;
+
+    case 0x1e:
+        registers[REG_TYPE::E] = Fetch();
+    break;
+
+    case 0x1f:
+
+    break;
+
+    case 0xcb:
+        std::cout << "CB OP" << std::endl;
+        isRunning = false;
+    break;
+
+    default :
+        std::cout << "Invalid OP: " << OP << std::endl;
+    break;
+    }
+}
+
+void CGB_CPU::ExecCBOP(uint8_t OP)
 {
 
 }

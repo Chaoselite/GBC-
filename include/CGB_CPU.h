@@ -1,9 +1,8 @@
 #ifndef CGB_CPU_H
 #define CGB_CPU_H
-#include <assert.h>
-#include "Types.h"
 #include <fstream>
 #include <iostream>
+#include "Utilities.h"
 #include "MemoryModule.h"
 
 enum REG_TYPE
@@ -33,18 +32,25 @@ public:
 
     void Run(void);
 
-    uint16_t  SP =0x0000;
-    uint16_t  PC =0x0000;
-    char  registers[7] = {0};
-    float   ClockSpd = 4.194304;
+
 
 private:
 
-    char Fetch(uint16_t ADDR);
+    uint8_t Fetch(void);
 
-    void ExecOP(uint16_t OP, char Data);
+    void ExecOP(uint8_t OP);
 
-    void ExecCBOP(uint16_t OP, char Data);
+    void ExecCBOP(uint8_t OP);
+
+    uint16_t SP        =0xfffe;
+
+    uint16_t PC        =0x0100;
+
+    char registers[7]   ={0};
+
+    float ClockSpd      =8.338; // this is double speed
+
+    bool isRunning = true;
 
     char *BIOS;
 

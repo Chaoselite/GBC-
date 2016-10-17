@@ -15,9 +15,9 @@ int main()
     cpu.SetCartridge(CL.Cartridge);
     cpu.SetMemory(&Memory);
 
-    std::cout << "Select a BIOS to load" << std::endl;
-    std::cin >> BIOSPATH;
-    cpu.LoadBIOS(BIOSPATH);
+    //std::cout << "Select a BIOS to load" << std::endl;
+    //std::cin >> BIOSPATH;
+    //cpu.LoadBIOS(BIOSPATH);
 
     std::cout << "Select a ROM to load" << std::endl;
     std::cin >> ROMFILEPATH;
@@ -25,9 +25,5 @@ int main()
 
     cpu.Run();
 
-    for (int i = 0; i != 10; i++)
-    {
-        title += CL.CHead->Title[i];
-    }
     return 0;
 }
