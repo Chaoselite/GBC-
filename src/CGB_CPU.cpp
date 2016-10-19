@@ -62,6 +62,7 @@ void CGB_CPU::ExecOP(uint8_t OP)
     uint16_t data16b = 0;
     uint8_t data8h = 0;
     uint8_t data8l = 0;
+    int8_t r8 = 0;
 
     switch (OP)
     {
@@ -197,7 +198,7 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x18:
-        int8_t r8 = Fetch();
+        r8 = Fetch();
         PC += r8;
 
     break;
@@ -236,6 +237,185 @@ void CGB_CPU::ExecOP(uint8_t OP)
     case 0x1f:
 
     break;
+
+    case 0x20:
+        if(!getbit8(registers[REG_TYPE::F], 7))
+        {
+            r8 = Fetch();
+            PC += r8;
+        }
+    break;
+
+    case 0x21:
+        registers[REG_TYPE::L] = Fetch();
+        registers[REG_TYPE::H] = Fetch();
+    break;
+
+    case 0x22:
+        data8h = registers[REG_TYPE::H];
+        data8l = registers[REG_TYPE::L];
+        data16a = concat16(data8h, data8l);
+        data16a++;
+        Memory->WriteToAddress(data16a, registers[REG_TYPE::A]);
+    break;
+
+    case 0x23:
+        data8h = registers[REG_TYPE::H];
+        data8l = registers[REG_TYPE::L];
+        data16a = concat16(data8h, data8l);
+        data16a++;
+        registers[REG_TYPE::B] = trunc8high(data16a);
+        registers[REG_TYPE::C] = trunc8low(data16a);
+
+    break;
+
+    case 0x24:
+
+    break;
+
+    case 0x25:
+
+    break;
+
+    case 0x26:
+        registers[REG_TYPE::H] = Fetch();
+
+    break;
+
+    case 0x27:
+
+    break;
+
+    case 0x28:
+        if(getbit8(registers[REG_TYPE::F], 7))
+        {
+            r8 = Fetch();
+            PC += r8;
+        }
+
+    break;
+
+    case 0x29:
+
+    break;
+
+    case 0x2a:
+        data16a = concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]);
+        data16a++;
+        registers[REG_TYPE::A] = Memory->ReadFromAddress(data16a);
+    break;
+
+    case 0x2b:
+        data8h = registers[REG_TYPE::H];
+        data8l = registers[REG_TYPE::L];
+        data16a = concat16(data8h, data8l);
+        data16a--;
+        registers[REG_TYPE::B] = trunc8high(data16a);
+        registers[REG_TYPE::C] = trunc8low(data16a);
+
+    break;
+
+    case 0x2c:
+
+    break;
+
+    case 0x2d:
+
+    break;
+
+    case 0x2e:
+        registers[REG_TYPE::L] = Fetch();
+    break;
+
+    case 0x2f:
+
+    break;
+
+    case 0x30:
+        if(!getbit8(registers[REG_TYPE::F], 4))
+        {
+            r8 = Fetch();
+            PC += r8;
+        }
+    break;
+
+    case 0x31:
+        data8l = Fetch();
+        data8h = Fetch();
+        data16a = concat16(data8h, data8l);
+        SP = data16a;
+    break;
+
+    case 0x32:
+        data8h = registers[REG_TYPE::H];
+        data8l = registers[REG_TYPE::L];
+        data16a = concat16(data8h, data8l);
+        data16a--;
+        Memory->WriteToAddress(data16a, registers[REG_TYPE::A]);
+    break;
+
+    case 0x33:
+        SP++;
+    break;
+
+    case 0x34:
+
+    break;
+
+    case 0x35:
+
+    break;
+
+    case 0x36:
+        data8h = registers[REG_TYPE::H];
+        data8l = registers[REG_TYPE::L];
+        data16a = concat16(data8h, data8l);
+        Memory->WriteToAddress(data16a, Fetch());
+    break;
+
+    case 0x37:
+
+    break;
+
+    case 0x38:
+        if(getbit8(registers[REG_TYPE::F], 4))
+        {
+            r8 = Fetch();
+            PC += r8;
+        }
+
+    break;
+
+    case 0x39:
+
+    break;
+
+    case 0x3a:
+        data16a = concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]);
+        data16a--;
+        registers[REG_TYPE::A] = Memory->ReadFromAddress(data16a);
+    break;
+
+    case 0x3b:
+        SP--;
+    break;
+
+    case 0x3c:
+
+    break;
+
+    case 0x3d:
+
+    break;
+
+    case 0x3e:
+        registers[REG_TYPE::A] = Fetch();
+    break;
+
+    case 0x3f:
+
+    break;
+
 
     case 0xcb:
         std::cout << "CB OP" << std::endl;

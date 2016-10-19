@@ -18,8 +18,11 @@ int main()
     //std::cout << "Select a BIOS to load" << std::endl;
     //std::cin >> BIOSPATH;
     //cpu.LoadBIOS(BIOSPATH);
+    uint16_t a= 0xff00;
+    uint8_t b= 0xaa;
 
-    std::cout << "Select a ROM to load" << std::endl;
+    a += b;
+    std::cout << "Select a ROM to load" <<std::endl;
     std::cin >> ROMFILEPATH;
     CL.Load(ROMFILEPATH);
 
