@@ -416,6 +416,356 @@ void CGB_CPU::ExecOP(uint8_t OP)
 
     break;
 
+    case 0x40:
+        data8h = registers[REG_TYPE::B];
+        registers[REG_TYPE::B] = data8h;
+    break;
+
+    case 0x41:
+        data8h = registers[REG_TYPE::C];
+        registers[REG_TYPE::B] = data8h;
+    break;
+
+    case 0x42:
+        data8h = registers[REG_TYPE::D];
+        registers[REG_TYPE::B] = data8h;
+    break;
+
+    case 0x43:
+        data8h = registers[REG_TYPE::E];
+        registers[REG_TYPE::B] = data8h;
+    break;
+
+    case 0x44:
+        data8h = registers[REG_TYPE::H];
+        registers[REG_TYPE::B] = data8h;
+    break;
+
+    case 0x45:
+        data8h = registers[REG_TYPE::L];
+        registers[REG_TYPE::B] = data8h;
+    break;
+
+    case 0x46:
+        data8h = registers[REG_TYPE::H];
+        data8l = registers[REG_TYPE::L];
+        data16a = concat16(data8h, data8l);
+        registers[REG_TYPE::B] = Memory.ReadFromAddress(data16a);
+    break;
+
+    case 0x47:
+        data8h = registers[REG_TYPE::A];
+        registers[REG_TYPE::B] = data8h;
+    break;
+
+    case 0x48:
+        data8h = registers[REG_TYPE::B];
+        registers[REG_TYPE::C] = data8h;
+
+    break;
+
+    case 0x49:
+        data8h = registers[REG_TYPE::C];
+        registers[REG_TYPE::C] = data8h;
+    break;
+
+    case 0x4a:
+        data8h = registers[REG_TYPE::D];
+        registers[REG_TYPE::C] = data8h;
+    break;
+
+    case 0x4b:
+        data8h = registers[REG_TYPE::E];
+        registers[REG_TYPE::C] = data8h;
+    break;
+
+    case 0x4c:
+        data8h = registers[REG_TYPE::H];
+        registers[REG_TYPE::C] = data8h;
+    break;
+
+    case 0x4d:
+        data8h = registers[REG_TYPE::L];
+        registers[REG_TYPE::C] = data8h;
+    break;
+
+    case 0x4e:
+        data8h = registers[REG_TYPE::H];
+        data8l = registers[REG_TYPE::L];
+        data16a = concat16(data8h, data8l);
+        registers[REG_TYPE::C] = Memory.ReadFromAddress(data16a);
+    break;
+
+    case 0x4f:
+        data8h = registers[REG_TYPE::A];
+        registers[REG_TYPE::C] = data8h;
+    break;
+
+    case 0x50:
+        data8h = registers[REG_TYPE::B];
+        registers[REG_TYPE::D] = data8h;
+    break;
+
+    case 0x51:
+        data8h = registers[REG_TYPE::C];
+        registers[REG_TYPE::D] = data8h;
+    break;
+
+    case 0x52:
+        data8h = registers[REG_TYPE::D];
+        registers[REG_TYPE::D] = data8h;
+    break;
+
+    case 0x53:
+        data8h = registers[REG_TYPE::E];
+        registers[REG_TYPE::D] = data8h;
+    break;
+
+    case 0x54:
+        data8h = registers[REG_TYPE::H];
+        registers[REG_TYPE::D] = data8h;
+    break;
+
+    case 0x55:
+        data8h = registers[REG_TYPE::L];
+        registers[REG_TYPE::D] = data8h;
+    break;
+
+    case 0x56:
+        data8h = registers[REG_TYPE::H];
+        data8l = registers[REG_TYPE::L];
+        data16a = concat16(data8h, data8l);
+        registers[REG_TYPE::D] = Memory.ReadFromAddress(data16a);
+    break;
+
+    case 0x57:
+        data8h = registers[REG_TYPE::A];
+        registers[REG_TYPE::D] = data8h;
+    break;
+
+    case 0x58:
+        data8h = registers[REG_TYPE::B];
+        registers[REG_TYPE::E] = data8h;
+
+    break;
+
+    case 0x59:
+        data8h = registers[REG_TYPE::C];
+        registers[REG_TYPE::E] = data8h;
+    break;
+
+    case 0x5a:
+        data8h = registers[REG_TYPE::D];
+        registers[REG_TYPE::E] = data8h;
+    break;
+
+    case 0x5b:
+        data8h = registers[REG_TYPE::E];
+        registers[REG_TYPE::E] = data8h;
+    break;
+
+    case 0x5c:
+        data8h = registers[REG_TYPE::H];
+        registers[REG_TYPE::E] = data8h;
+    break;
+
+    case 0x5d:
+        data8h = registers[REG_TYPE::L];
+        registers[REG_TYPE::E] = data8h;
+    break;
+
+    case 0x5e:
+        data8h = registers[REG_TYPE::H];
+        data8l = registers[REG_TYPE::L];
+        data16a = concat16(data8h, data8l);
+        registers[REG_TYPE::E] = Memory.ReadFromAddress(data16a);
+    break;
+
+    case 0x5f:
+        data8h = registers[REG_TYPE::A];
+        registers[REG_TYPE::E] = data8h;
+    break;
+
+    case 0x60:
+        data8h = registers[REG_TYPE::B];
+        registers[REG_TYPE::H] = data8h;
+    break;
+
+    case 0x61:
+        data8h = registers[REG_TYPE::C];
+        registers[REG_TYPE::H] = data8h;
+    break;
+
+    case 0x62:
+        data8h = registers[REG_TYPE::D];
+        registers[REG_TYPE::H] = data8h;
+    break;
+
+    case 0x63:
+        data8h = registers[REG_TYPE::E];
+        registers[REG_TYPE::H] = data8h;
+    break;
+
+    case 0x64:
+        data8h = registers[REG_TYPE::H];
+        registers[REG_TYPE::H] = data8h;
+    break;
+
+    case 0x65:
+        data8h = registers[REG_TYPE::L];
+        registers[REG_TYPE::H] = data8h;
+    break;
+
+    case 0x66:
+        data8h = registers[REG_TYPE::H];
+        data8l = registers[REG_TYPE::L];
+        data16a = concat16(data8h, data8l);
+        registers[REG_TYPE::H] = Memory.ReadFromAddress(data16a);
+    break;
+
+    case 0x67:
+        data8h = registers[REG_TYPE::A];
+        registers[REG_TYPE::H] = data8h;
+    break;
+
+    case 0x68:
+        data8h = registers[REG_TYPE::B];
+        registers[REG_TYPE::L] = data8h;
+
+    break;
+
+    case 0x69:
+        data8h = registers[REG_TYPE::C];
+        registers[REG_TYPE::L] = data8h;
+    break;
+
+    case 0x6a:
+        data8h = registers[REG_TYPE::D];
+        registers[REG_TYPE::L] = data8h;
+    break;
+
+    case 0x6b:
+        data8h = registers[REG_TYPE::E];
+        registers[REG_TYPE::L] = data8h;
+    break;
+
+    case 0x6c:
+        data8h = registers[REG_TYPE::H];
+        registers[REG_TYPE::L] = data8h;
+    break;
+
+    case 0x6d:
+        data8h = registers[REG_TYPE::L];
+        registers[REG_TYPE::L] = data8h;
+    break;
+
+    case 0x6e:
+        data8h = registers[REG_TYPE::H];
+        data8l = registers[REG_TYPE::L];
+        data16a = concat16(data8h, data8l);
+        registers[REG_TYPE::L] = Memory.ReadFromAddress(data16a);
+    break;
+
+    case 0x6f:
+        data8h = registers[REG_TYPE::A];
+        registers[REG_TYPE::L] = data8h;
+    break;
+
+    case 0x70:
+        data8h = registers[REG_TYPE::H];
+        data8l = registers[REG_TYPE::L];
+        data16a = concat16(data8h, data8l);
+        Memory.WriteToAddress(data16a, registers[REG_TYPE::B]);
+    break;
+
+    case 0x71:
+        data8h = registers[REG_TYPE::H];
+        data8l = registers[REG_TYPE::L];
+        data16a = concat16(data8h, data8l);
+        Memory.WriteToAddress(data16a, registers[REG_TYPE::C]);
+    break;
+
+    case 0x72:
+        data8h = registers[REG_TYPE::H];
+        data8l = registers[REG_TYPE::L];
+        data16a = concat16(data8h, data8l);
+        Memory.WriteToAddress(data16a, registers[REG_TYPE::D]);
+    break;
+
+    case 0x73:
+        data8h = registers[REG_TYPE::H];
+        data8l = registers[REG_TYPE::L];
+        data16a = concat16(data8h, data8l);
+        Memory.WriteToAddress(data16a, registers[REG_TYPE::E]);
+    break;
+
+    case 0x74:
+        data8h = registers[REG_TYPE::H];
+        data8l = registers[REG_TYPE::L];
+        data16a = concat16(data8h, data8l);
+        Memory.WriteToAddress(data16a, registers[REG_TYPE::H]);
+    break;
+
+    case 0x75:
+        data8h = registers[REG_TYPE::H];
+        data8l = registers[REG_TYPE::L];
+        data16a = concat16(data8h, data8l);
+        Memory.WriteToAddress(data16a, registers[REG_TYPE::L]);
+    break;
+
+    case 0x76:
+        //HALT
+    break;
+
+    case 0x77:
+        data8h = registers[REG_TYPE::H];
+        data8l = registers[REG_TYPE::L];
+        data16a = concat16(data8h, data8l);
+        Memory.WriteToAddress(data16a, registers[REG_TYPE::A]);
+    break;
+
+    case 0x78:
+        data8h = registers[REG_TYPE::B];
+        registers[REG_TYPE::A] = data8h;
+
+    break;
+
+    case 0x79:
+        data8h = registers[REG_TYPE::C];
+        registers[REG_TYPE::A] = data8h;
+    break;
+
+    case 0x7a:
+        data8h = registers[REG_TYPE::D];
+        registers[REG_TYPE::A] = data8h;
+    break;
+
+    case 0x7b:
+        data8h = registers[REG_TYPE::E];
+        registers[REG_TYPE::A] = data8h;
+    break;
+
+    case 0x7c:
+        data8h = registers[REG_TYPE::H];
+        registers[REG_TYPE::A] = data8h;
+    break;
+
+    case 0x7d:
+        data8h = registers[REG_TYPE::L];
+        registers[REG_TYPE::A] = data8h;
+    break;
+
+    case 0x7e:
+        data8h = registers[REG_TYPE::H];
+        data8l = registers[REG_TYPE::L];
+        data16a = concat16(data8h, data8l);
+        registers[REG_TYPE::A] = Memory.ReadFromAddress(data16a);
+    break;
+
+    case 0x7f:
+        data8h = registers[REG_TYPE::A];
+        registers[REG_TYPE::A] = data8h;
+    break;
 
     case 0xcb:
         std::cout << "CB OP" << std::endl;
