@@ -7,15 +7,28 @@
 
 enum REG_TYPE
 {
-    A =0,// Accumulator
-    F =1,// Flags //7-(Z)Zero 6-(N)Subtract 5-(H)Half Carry 4-(C)Carry 3-0 not used(set to 0)
-    B =2,
-    C =3,
-    D =4,
-    E =5,
-    H =6,
-    L =7
+    A,// Accumulator
+    F,// Flags //7-(Z)Zero 6-(N)Subtract 5-(H)Half Carry 4-(C)Carry 3-0 not used(set to 0)
+    B,
+    C,
+    D,
+    E,
+    H,
+    L
+};
 
+enum OPFlag
+{
+    ADD,
+    SUB
+};
+
+enum Flags
+{
+    fZ,
+    fN,
+    fH,
+    fC
 };
 
 class CGB_CPU
@@ -26,13 +39,9 @@ public:
 
     void SetCartridge(char *Cart);
 
-    void SetMemory(MemoryModule *Mem);
-
     void LoadBIOS(std::string Filepath);
 
     void Run(void);
-
-
 
 private:
 
@@ -44,7 +53,7 @@ private:
 
     uint16_t SP        =0xfffe;
 
-    uint16_t PC        =0x0100;
+    uint16_t PC        =0x0150;
 
     char registers[7]   ={0};
 
@@ -57,6 +66,10 @@ private:
     char *Cartridge;
 
     MemoryModule *Memory;
+
+    uint16_t FlaggedOP(OPFlag Flags, uint16_t Value, uint16_t Value2);
+
+    void SetFlag(Flags Flag, bool Value);
 
 };
 

@@ -4,13 +4,21 @@
 	<Project>
 		<Option title="gbc++" />
 		<Option pch_mode="2" />
-		<Option compiler="gnu_gcc_compiler_dw2" />
+		<Option compiler="gcc" />
+		<MakeCommands>
+			<Build command="" />
+			<CompileFile command="" />
+			<Clean command="" />
+			<DistClean command="" />
+			<AskRebuildNeeded command="" />
+			<SilentBuild command=" &gt; $(CMD_NULL)" />
+		</MakeCommands>
 		<Build>
 			<Target title="Debug">
 				<Option output="bin/Debug/gbc++" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
-				<Option compiler="gnu_gcc_compiler_dw2" />
+				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="include" />
@@ -23,7 +31,7 @@
 				<Option output="bin/Release/gbc++" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
-				<Option compiler="gnu_gcc_compiler_dw2" />
+				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add directory="include" />
@@ -34,8 +42,7 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-Wall" />
-			<Add option="-fexceptions" />
+			<Add option="-std=c++0x" />
 		</Compiler>
 		<Unit filename="include/CGB_CPU.h" />
 		<Unit filename="include/CartLoader.h" />

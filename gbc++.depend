@@ -36,3 +36,41 @@
 	"stdint.h"
 	<bitset>
 
+1479694543 source:c:\users\chaoselite\desktop\gbc++\main.cpp
+	<iostream>
+	"CGB_CPU.h"
+	"CartLoader.h"
+	"MemoryModule.h"
+
+1479694204 c:\users\chaoselite\desktop\gbc++\include\cgb_cpu.h
+	<fstream>
+	<iostream>
+	"Utilities.h"
+	"MemoryModule.h"
+
+1479519477 c:\users\chaoselite\desktop\gbc++\include\utilities.h
+	"stdint.h"
+	<bitset>
+
+1479694329 c:\users\chaoselite\desktop\gbc++\include\memorymodule.h
+	<iostream>
+	"Types.h"
+
+1479693106 c:\users\chaoselite\desktop\gbc++\include\types.h
+	<stdint.h>
+
+1479519477 c:\users\chaoselite\desktop\gbc++\include\cartloader.h
+	<fstream>
+	<iostream>
+	<string>
+	"Types.h"
+
+1479668451 source:c:\users\chaoselite\desktop\gbc++\src\cartloader.cpp
+	"CartLoader.h"
+
+1479694496 source:c:\users\chaoselite\desktop\gbc++\src\cgb_cpu.cpp
+	"CGB_CPU.h"
+
+1479694308 source:c:\users\chaoselite\desktop\gbc++\src\memorymodule.cpp
+	"MemoryModule.h"
+

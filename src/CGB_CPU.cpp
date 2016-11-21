@@ -3,27 +3,25 @@
 CGB_CPU::CGB_CPU()
 {
     BIOS = new char[2304];
+    Memory = new MemoryModule(65535);
 }
 
 CGB_CPU::~CGB_CPU()
 {
     delete [] BIOS;
+    delete Memory;
 }
 
 void CGB_CPU::SetCartridge(char *Cart)
 {
     Cartridge = Cart;
-}
-
-void CGB_CPU::SetMemory(MemoryModule *Mem)
-{
-    Memory = Mem;
+    Memory->LoadROMChunk(0x100, 32511, 0x100, Cartridge);//load header bank 1 and switchable
 }
 
 void CGB_CPU::LoadBIOS(std::string Filepath)
 {
     std::ifstream is;
-    is.open (Filepath, std::ifstream::binary );
+    is.open (Filepath.c_str(), std::ifstream::binary );
     if(!is)
     {
             std::cout<<"File couldn't open BIOS"<<std::endl;
@@ -47,9 +45,9 @@ void CGB_CPU::Run(void)
 
 uint8_t CGB_CPU::Fetch(void)
 {
-   uint8_t Data = Cartridge[PC];
+   uint8_t Data = Memory->ReadFromAddress(PC);
    PC++;
-   if (PC == 0x1ff)
+   if (PC > 0xffff)
    {
        isRunning = false;
    }
@@ -63,6 +61,7 @@ void CGB_CPU::ExecOP(uint8_t OP)
     uint8_t data8h = 0;
     uint8_t data8l = 0;
     int8_t r8 = 0;
+    char input;
 
     switch (OP)
     {
@@ -450,7 +449,7 @@ void CGB_CPU::ExecOP(uint8_t OP)
         data8h = registers[REG_TYPE::H];
         data8l = registers[REG_TYPE::L];
         data16a = concat16(data8h, data8l);
-        registers[REG_TYPE::B] = Memory.ReadFromAddress(data16a);
+        registers[REG_TYPE::B] = Memory->ReadFromAddress(data16a);
     break;
 
     case 0x47:
@@ -493,7 +492,7 @@ void CGB_CPU::ExecOP(uint8_t OP)
         data8h = registers[REG_TYPE::H];
         data8l = registers[REG_TYPE::L];
         data16a = concat16(data8h, data8l);
-        registers[REG_TYPE::C] = Memory.ReadFromAddress(data16a);
+        registers[REG_TYPE::C] = Memory->ReadFromAddress(data16a);
     break;
 
     case 0x4f:
@@ -535,7 +534,7 @@ void CGB_CPU::ExecOP(uint8_t OP)
         data8h = registers[REG_TYPE::H];
         data8l = registers[REG_TYPE::L];
         data16a = concat16(data8h, data8l);
-        registers[REG_TYPE::D] = Memory.ReadFromAddress(data16a);
+        registers[REG_TYPE::D] = Memory->ReadFromAddress(data16a);
     break;
 
     case 0x57:
@@ -578,7 +577,7 @@ void CGB_CPU::ExecOP(uint8_t OP)
         data8h = registers[REG_TYPE::H];
         data8l = registers[REG_TYPE::L];
         data16a = concat16(data8h, data8l);
-        registers[REG_TYPE::E] = Memory.ReadFromAddress(data16a);
+        registers[REG_TYPE::E] = Memory->ReadFromAddress(data16a);
     break;
 
     case 0x5f:
@@ -620,7 +619,7 @@ void CGB_CPU::ExecOP(uint8_t OP)
         data8h = registers[REG_TYPE::H];
         data8l = registers[REG_TYPE::L];
         data16a = concat16(data8h, data8l);
-        registers[REG_TYPE::H] = Memory.ReadFromAddress(data16a);
+        registers[REG_TYPE::H] = Memory->ReadFromAddress(data16a);
     break;
 
     case 0x67:
@@ -663,7 +662,7 @@ void CGB_CPU::ExecOP(uint8_t OP)
         data8h = registers[REG_TYPE::H];
         data8l = registers[REG_TYPE::L];
         data16a = concat16(data8h, data8l);
-        registers[REG_TYPE::L] = Memory.ReadFromAddress(data16a);
+        registers[REG_TYPE::L] = Memory->ReadFromAddress(data16a);
     break;
 
     case 0x6f:
@@ -675,42 +674,42 @@ void CGB_CPU::ExecOP(uint8_t OP)
         data8h = registers[REG_TYPE::H];
         data8l = registers[REG_TYPE::L];
         data16a = concat16(data8h, data8l);
-        Memory.WriteToAddress(data16a, registers[REG_TYPE::B]);
+        Memory->WriteToAddress(data16a, registers[REG_TYPE::B]);
     break;
 
     case 0x71:
         data8h = registers[REG_TYPE::H];
         data8l = registers[REG_TYPE::L];
         data16a = concat16(data8h, data8l);
-        Memory.WriteToAddress(data16a, registers[REG_TYPE::C]);
+        Memory->WriteToAddress(data16a, registers[REG_TYPE::C]);
     break;
 
     case 0x72:
         data8h = registers[REG_TYPE::H];
         data8l = registers[REG_TYPE::L];
         data16a = concat16(data8h, data8l);
-        Memory.WriteToAddress(data16a, registers[REG_TYPE::D]);
+        Memory->WriteToAddress(data16a, registers[REG_TYPE::D]);
     break;
 
     case 0x73:
         data8h = registers[REG_TYPE::H];
         data8l = registers[REG_TYPE::L];
         data16a = concat16(data8h, data8l);
-        Memory.WriteToAddress(data16a, registers[REG_TYPE::E]);
+        Memory->WriteToAddress(data16a, registers[REG_TYPE::E]);
     break;
 
     case 0x74:
         data8h = registers[REG_TYPE::H];
         data8l = registers[REG_TYPE::L];
         data16a = concat16(data8h, data8l);
-        Memory.WriteToAddress(data16a, registers[REG_TYPE::H]);
+        Memory->WriteToAddress(data16a, registers[REG_TYPE::H]);
     break;
 
     case 0x75:
         data8h = registers[REG_TYPE::H];
         data8l = registers[REG_TYPE::L];
         data16a = concat16(data8h, data8l);
-        Memory.WriteToAddress(data16a, registers[REG_TYPE::L]);
+        Memory->WriteToAddress(data16a, registers[REG_TYPE::L]);
     break;
 
     case 0x76:
@@ -721,7 +720,7 @@ void CGB_CPU::ExecOP(uint8_t OP)
         data8h = registers[REG_TYPE::H];
         data8l = registers[REG_TYPE::L];
         data16a = concat16(data8h, data8l);
-        Memory.WriteToAddress(data16a, registers[REG_TYPE::A]);
+        Memory->WriteToAddress(data16a, registers[REG_TYPE::A]);
     break;
 
     case 0x78:
@@ -759,7 +758,7 @@ void CGB_CPU::ExecOP(uint8_t OP)
         data8h = registers[REG_TYPE::H];
         data8l = registers[REG_TYPE::L];
         data16a = concat16(data8h, data8l);
-        registers[REG_TYPE::A] = Memory.ReadFromAddress(data16a);
+        registers[REG_TYPE::A] = Memory->ReadFromAddress(data16a);
     break;
 
     case 0x7f:
@@ -773,7 +772,9 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     default :
-        std::cout << "Invalid OP: " << OP << std::endl;
+
+        std::cout << "Invalid OP: " << OP << " at location: " << PC << std::endl;
+        std::cin >> input;
     break;
     }
 }
@@ -782,3 +783,46 @@ void CGB_CPU::ExecCBOP(uint8_t OP)
 {
 
 }
+
+uint16_t CGB_CPU::FlaggedOP(OPFlag Flags, uint16_t Value, uint16_t Value2)
+{
+    uint16_t Result =0;
+    bool Carry =0;
+    bool HalfCarry =0;
+    bool Zero =0;
+    bool Subtract = 0;
+
+    if(Flags == OPFlag::ADD)
+    {
+
+    }
+    else if (Flags == OPFlag::SUB)
+    {
+        Subtract = 1;
+    }
+    else
+    {
+
+    }
+}
+
+ void CGB_CPU::SetFlag(Flags Flag, bool Value)
+ {
+     if(Flag == Flags::fZ)
+     {
+        setbit8(registers[REG_TYPE::F], 7, Value);
+     }
+     if(Flag == Flags::fN)
+     {
+
+     }
+     if (Flag == Flags::fH)
+     {
+
+     }
+     if (Flag == Flags::fC)
+     {
+
+     }
+ }
+
