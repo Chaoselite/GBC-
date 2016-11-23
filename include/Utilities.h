@@ -30,6 +30,7 @@ inline uint8_t setbit8(uint8_t Data, unsigned Position, bool Value)
     std::bitset<8> Work (Data);
     Work.set(Position, Value);
     Result = Work.to_ulong();
+    return Result;
 }
 
 inline bool getbit8(uint8_t Data, unsigned Position)
@@ -37,5 +38,24 @@ inline bool getbit8(uint8_t Data, unsigned Position)
     std::bitset<8> Work (Data);
     return Work.test(Position);
 }
+
+inline uint8_t trunc4high(uint8_t Data)
+{
+    uint8_t Result = Data;
+    return Result >> 4;
+}
+
+inline uint8_t trunc4low(uint8_t Data)
+{
+    uint8_t Result = 0;
+    std::bitset<8> Work (Data);
+    Work.set(4, 0);
+    Work.set(5, 0);
+    Work.set(6, 0);
+    Work.set(7, 0);
+    Result = Work.to_ulong();
+    return Result;
+}
+
 
 #endif // UTILITIES_H_INCLUDED

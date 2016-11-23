@@ -67,7 +67,7 @@ private:
 
     MemoryModule *Memory;
 
-    uint16_t FlaggedOP(OPFlag Flags, uint16_t Value, uint16_t Value2);
+    uint8_t FlaggedOP(OPFlag OFlags, uint8_t Value, uint8_t Value2);
 
     void SetFlag(Flags Flag, bool Value);
 

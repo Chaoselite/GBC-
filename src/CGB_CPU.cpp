@@ -784,26 +784,46 @@ void CGB_CPU::ExecCBOP(uint8_t OP)
 
 }
 
-uint16_t CGB_CPU::FlaggedOP(OPFlag Flags, uint16_t Value, uint16_t Value2)
+uint8_t CGB_CPU::FlaggedOP(OPFlag OFlags, uint8_t Value, uint8_t Value2)
 {
-    uint16_t Result =0;
-    bool Carry =0;
-    bool HalfCarry =0;
-    bool Zero =0;
-    bool Subtract = 0;
+    uint8_t Result = 0;
+    uint8_t Data = Value;
+    uint8_t Data2 = Value2;
+    bool Carry = 0;
+    bool HCarry = 0;
+    bool Zero = 0;
 
-    if(Flags == OPFlag::ADD)
+    uint8_t Datah4 = trunc4high(Data);
+    uint8_t Datal4 = trunc4low(Data);
+    uint8_t Data2h4 = trunc4high(Data2);
+    uint8_t Data2l4 = trunc4low(Data2);
+
+
+    if(OFlags == OPFlag::ADD)
     {
+        Result = Data + Data2;
+        HCarry = 0xf < Data2l4 + Datal4;
+        Carry = 0xf < Data2h4 + Datah4;
+
 
     }
-    else if (Flags == OPFlag::SUB)
+    if(OFlags == OPFlag::SUB)
     {
-        Subtract = 1;
-    }
-    else
-    {
+        Result = Data - Data2;
+        HCarry = 0x0 < Data2l4 - Datal4;
+        Carry = 0x0 < Data2h4 - Datah4;
 
+        SetFlag(Flags::fN, 1);
     }
+    if(Result == 0)
+    {
+        SetFlag(Flags::fZ, 1);
+    }
+
+    SetFlag(Flags::fH, HCarry);
+    SetFlag(Flags::fC, Carry);
+
+    return Result;
 }
 
  void CGB_CPU::SetFlag(Flags Flag, bool Value)
@@ -814,15 +834,15 @@ uint16_t CGB_CPU::FlaggedOP(OPFlag Flags, uint16_t Value, uint16_t Value2)
      }
      if(Flag == Flags::fN)
      {
-
+        setbit8(registers[REG_TYPE::F], 6, Value);
      }
      if (Flag == Flags::fH)
      {
-
+        setbit8(registers[REG_TYPE::F], 5, Value);
      }
      if (Flag == Flags::fC)
      {
-
+        setbit8(registers[REG_TYPE::F], 4, Value);
      }
  }
 
