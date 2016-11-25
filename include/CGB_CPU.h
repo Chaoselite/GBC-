@@ -71,6 +71,8 @@ private:
 
     void SetFlag(Flags Flag, bool Value);
 
+    bool GetFlag(Flags Flag);
+
 };
 
 #endif // CGB_CPU_H

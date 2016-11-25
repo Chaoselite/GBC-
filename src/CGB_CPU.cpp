@@ -56,6 +56,10 @@ uint8_t CGB_CPU::Fetch(void)
 
 void CGB_CPU::ExecOP(uint8_t OP)
 {
+    bool OCarry = 0;
+    bool OHCarry = 0;
+    bool OZero = 0;
+    bool ONeg = 0;
     uint16_t data16a = 0;
     uint16_t data16b = 0;
     uint8_t data8h = 0;
@@ -93,10 +97,16 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x04:
+        OCarry = GetFlag(Flags::fC);
+        registers[REG_TYPE::B] = FlaggedOP(OPFlag::ADD, registers[REG_TYPE::B], 0x1);
+        SetFlag(Flags::fC, OCarry);
 
     break;
 
     case 0x05:
+        OCarry = GetFlag(Flags::fC);
+        registers[REG_TYPE::B] = FlaggedOP(OPFlag::SUB, registers[REG_TYPE::B], 0x1);
+        SetFlag(Flags::fC, OCarry);
 
     break;
 
@@ -137,10 +147,16 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x0c:
+        OCarry = GetFlag(Flags::fC);
+        registers[REG_TYPE::C] = FlaggedOP(OPFlag::ADD, registers[REG_TYPE::C], 0x1);
+        SetFlag(Flags::fC, OCarry);
 
     break;
 
     case 0x0d:
+        OCarry = GetFlag(Flags::fC);
+        registers[REG_TYPE::C] = FlaggedOP(OPFlag::SUB, registers[REG_TYPE::C], 0x1);
+        SetFlag(Flags::fC, OCarry);
 
     break;
 
@@ -180,10 +196,16 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x14:
+        OCarry = GetFlag(Flags::fC);
+        registers[REG_TYPE::D] = FlaggedOP(OPFlag::ADD, registers[REG_TYPE::D], 0x1);
+        SetFlag(Flags::fC, OCarry);
 
     break;
 
     case 0x15:
+        OCarry = GetFlag(Flags::fC);
+        registers[REG_TYPE::D] = FlaggedOP(OPFlag::SUB, registers[REG_TYPE::D], 0x1);
+        SetFlag(Flags::fC, OCarry);
 
     break;
 
@@ -222,10 +244,16 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x1c:
+        OCarry = GetFlag(Flags::fC);
+        registers[REG_TYPE::E] = FlaggedOP(OPFlag::ADD, registers[REG_TYPE::E], 0x1);
+        SetFlag(Flags::fC, OCarry);
 
     break;
 
     case 0x1d:
+        OCarry = GetFlag(Flags::fC);
+        registers[REG_TYPE::E] = FlaggedOP(OPFlag::SUB, registers[REG_TYPE::E], 0x1);
+        SetFlag(Flags::fC, OCarry);
 
     break;
 
@@ -269,10 +297,16 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x24:
+        OCarry = GetFlag(Flags::fC);
+        registers[REG_TYPE::H] = FlaggedOP(OPFlag::ADD, registers[REG_TYPE::H], 0x1);
+        SetFlag(Flags::fC, OCarry);
 
     break;
 
     case 0x25:
+        OCarry = GetFlag(Flags::fC);
+        registers[REG_TYPE::H] = FlaggedOP(OPFlag::SUB, registers[REG_TYPE::H], 0x1);
+        SetFlag(Flags::fC, OCarry);
 
     break;
 
@@ -315,10 +349,16 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x2c:
+        OCarry = GetFlag(Flags::fC);
+        registers[REG_TYPE::L] = FlaggedOP(OPFlag::ADD, registers[REG_TYPE::L], 0x1);
+        SetFlag(Flags::fC, OCarry);
 
     break;
 
     case 0x2d:
+        OCarry = GetFlag(Flags::fC);
+        registers[REG_TYPE::L] = FlaggedOP(OPFlag::SUB, registers[REG_TYPE::L], 0x1);
+        SetFlag(Flags::fC, OCarry);
 
     break;
 
@@ -358,10 +398,22 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x34:
+        OCarry = GetFlag(Flags::fC);
+        data8h = registers[REG_TYPE::H];
+        data8l = registers[REG_TYPE::L];
+        data16a = concat16(data8h, data8l);
+        Memory->WriteToAddress(data16a, FlaggedOP(OPFlag::ADD, Memory->ReadFromAddress(data16a), 0x1));
+        SetFlag(Flags::fC, OCarry);
 
     break;
 
     case 0x35:
+        OCarry = GetFlag(Flags::fC);
+        data8h = registers[REG_TYPE::H];
+        data8l = registers[REG_TYPE::L];
+        data16a = concat16(data8h, data8l);
+        Memory->WriteToAddress(data16a, FlaggedOP(OPFlag::SUB, Memory->ReadFromAddress(data16a), 0x1));
+        SetFlag(Flags::fC, OCarry);
 
     break;
 
@@ -400,10 +452,16 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x3c:
+        OCarry = GetFlag(Flags::fC);
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::ADD, registers[REG_TYPE::A], 0x1);
+        SetFlag(Flags::fC, OCarry);
 
     break;
 
     case 0x3d:
+        OCarry = GetFlag(Flags::fC);
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::SUB, registers[REG_TYPE::A], 0x1);
+        SetFlag(Flags::fC, OCarry);
 
     break;
 
@@ -805,13 +863,13 @@ uint8_t CGB_CPU::FlaggedOP(OPFlag OFlags, uint8_t Value, uint8_t Value2)
         HCarry = 0xf < Data2l4 + Datal4;
         Carry = 0xf < Data2h4 + Datah4;
 
-
+        SetFlag(Flags::fN, 0);
     }
-    if(OFlags == OPFlag::SUB)
+    if(OFlags == OPFlag::SUB) //this may be a problem
     {
         Result = Data - Data2;
-        HCarry = 0x0 < Data2l4 - Datal4;
-        Carry = 0x0 < Data2h4 - Datah4;
+        HCarry = 0x0 > Datal4 - Data2l4;
+        Carry = 0x0 > Datah4 - Data2h4;
 
         SetFlag(Flags::fN, 1);
     }
@@ -846,3 +904,24 @@ uint8_t CGB_CPU::FlaggedOP(OPFlag OFlags, uint8_t Value, uint8_t Value2)
      }
  }
 
+bool CGB_CPU::GetFlag(Flags Flag)
+{
+    bool Result = 0;
+    if(Flag == Flags::fZ)
+    {
+        getbit8(registers[REG_TYPE::F], 7);
+    }
+    if(Flag == Flags::fN)
+    {
+        getbit8(registers[REG_TYPE::F], 6);
+    }
+    if (Flag == Flags::fH)
+    {
+        getbit8(registers[REG_TYPE::F], 5);
+    }
+    if (Flag == Flags::fC)
+    {
+        getbit8(registers[REG_TYPE::F], 4);
+    }
+    return Result;
+}
