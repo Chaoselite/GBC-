@@ -45,7 +45,13 @@ public:
 
 private:
 
+    bool InterruptsEnabled = 1;
+
+    uint8_t Interrupt = 0;
+
     uint8_t Fetch(void);
+
+    bool ExecInterrupt(uint8_t Interrupt);
 
     void ExecOP(uint8_t OP);
 

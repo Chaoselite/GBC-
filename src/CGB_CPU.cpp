@@ -39,6 +39,13 @@ void CGB_CPU::Run(void)
 {
     while(isRunning)
     {
+        if(InterruptsEnabled)
+        {
+            if(Interrupt)
+            {
+                ExecInterrupt(Interrupt);
+            }
+        }
         ExecOP(Fetch());
     }
 }
@@ -47,11 +54,12 @@ uint8_t CGB_CPU::Fetch(void)
 {
    uint8_t Data = Memory->ReadFromAddress(PC);
    PC++;
-   if (PC > 0xffff)
-   {
-       isRunning = false;
-   }
    return Data;
+}
+
+bool CGB_CPU::ExecInterrupt(uint8_t Interrupt)
+{
+
 }
 
 void CGB_CPU::ExecOP(uint8_t OP)
@@ -128,6 +136,20 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x09:
+        OZero = GetFlag(Flags::fZ);
+        data8h = registers[REG_TYPE::H];
+        data8l = registers[REG_TYPE::B];
+        FlaggedOP(OPFlag::ADD, data8h, data8l);
+
+        data16a = concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]);
+        data16b = concat16(registers[REG_TYPE::B], registers[REG_TYPE::C]);
+        data16a += data16b;
+
+        registers[REG_TYPE::H] = trunc8high(data16a);
+        registers[REG_TYPE::L] = trunc8low(data16a);
+
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fZ, OZero);
 
     break;
 
@@ -226,6 +248,21 @@ void CGB_CPU::ExecOP(uint8_t OP)
 
     case 0x19:
 
+        OZero = GetFlag(Flags::fZ);
+        data8h = registers[REG_TYPE::H];
+        data8l = registers[REG_TYPE::D];
+        FlaggedOP(OPFlag::ADD, data8h, data8l);
+
+        data16a = concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]);
+        data16b = concat16(registers[REG_TYPE::D], registers[REG_TYPE::E]);
+        data16a += data16b;
+
+        registers[REG_TYPE::H] = trunc8high(data16a);
+        registers[REG_TYPE::L] = trunc8low(data16a);
+
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fZ, OZero);
+
     break;
 
     case 0x1a:
@@ -316,6 +353,15 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x27:
+        data8h = registers[REG_TYPE::A];
+        if(GetFlag(Flags::fH) || trunc4low(data8h) > 0x9)
+        {
+            data8h += 0x06;
+        }
+        if(GetFlag(Flags::fC) || trunc4high(data8h) > 0x9)
+        {
+            data8h += 0x60;
+        }
 
     break;
 
@@ -329,6 +375,20 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x29:
+        OZero = GetFlag(Flags::fZ);
+        data8h = registers[REG_TYPE::H];
+        data8l = registers[REG_TYPE::H];
+        FlaggedOP(OPFlag::ADD, data8h, data8l);
+
+        data16a = concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]);
+        data16b = concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]);
+        data16a += data16b;
+
+        registers[REG_TYPE::H] = trunc8high(data16a);
+        registers[REG_TYPE::L] = trunc8low(data16a);
+
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fZ, OZero);
 
     break;
 
@@ -438,6 +498,20 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x39:
+        OZero = GetFlag(Flags::fZ);
+        data8h = registers[REG_TYPE::H];
+        data8l = trunc8high(SP);
+        FlaggedOP(OPFlag::ADD, data8h, data8l);
+
+        data16a = concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]);
+        data16b = SP;
+        data16a += data16b;
+
+        registers[REG_TYPE::H] = trunc8high(data16a);
+        registers[REG_TYPE::L] = trunc8low(data16a);
+
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fZ, OZero);
 
     break;
 
