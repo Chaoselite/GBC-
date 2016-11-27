@@ -124,6 +124,15 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x07:
+        data8h = registers[REG_TYPE::A];
+        OCarry = getbit8(data8h, 7);
+        data8h << 1;
+        setbit8(data8h, 0, OCarry);
+        registers[REG_TYPE::A] = data8h;
+        SetFlag(Flags::fC, OCarry);
+        SetFlag(Flags::fZ, 0);
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 0);
 
     break;
 
@@ -187,6 +196,15 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x0f:
+        data8h = registers[REG_TYPE::A];
+        OCarry = getbit8(data8h, 0);
+        data8h >> 1;
+        setbit8(data8h, 7, OCarry);
+        registers[REG_TYPE::A] = data8h;
+        SetFlag(Flags::fC, OCarry);
+        SetFlag(Flags::fZ, 0);
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 0);
 
     break;
 
@@ -237,6 +255,15 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x17:
+        data8h = registers[REG_TYPE::A];
+        OCarry = getbit8(data8h, 7);
+        data8h << 1;
+        setbit8(data8h, 0, GetFlag(Flags::fC));
+        registers[REG_TYPE::A] = data8h;
+        SetFlag(Flags::fC, OCarry);
+        SetFlag(Flags::fZ, 0);
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 0);
 
     break;
 
@@ -299,6 +326,15 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x1f:
+        data8h = registers[REG_TYPE::A];
+        OCarry = getbit8(data8h, 0);
+        data8h >> 1;
+        setbit8(data8h, 7, GetFlag(Flags::fC));
+        registers[REG_TYPE::A] = data8h;
+        SetFlag(Flags::fC, OCarry);
+        SetFlag(Flags::fZ, 0);
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 0);
 
     break;
 

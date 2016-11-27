@@ -4,6 +4,11 @@
 #include "MemoryModule.h"
 using namespace std;
 
+//TODO: add OPs 2f, 3f then continue to 80+
+//Add MBC swapping
+//Add restart and interrupt vectors
+//Start VRAM interpreting
+
 int main()
 {
     std::string ROMFILEPATH, BIOSPATH;
