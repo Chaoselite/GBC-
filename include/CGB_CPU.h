@@ -45,9 +45,7 @@ public:
 
 private:
 
-    bool InterruptsEnabled = 1;
-
-    uint8_t Interrupt = 0;
+    bool InterruptWait = 0;
 
     uint8_t Fetch(void);
 

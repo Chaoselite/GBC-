@@ -57,5 +57,49 @@ inline uint8_t trunc4low(uint8_t Data)
     return Result;
 }
 
+inline uint8_t or8bit(uint8_t Data1, uint8_t Data2)
+{
+    uint8_t Result = 0;
+    std::bitset<8> Work1 (Data1);
+    std::bitset<8> Work2 (Data2);
+    std::bitset<8> WorkResult (Result);
+    for (int i = 0; i != 8; i++)
+    {
+        if(Work1.test(i) || Work2.test(i))
+        {
+            WorkResult.set(i, 1);
+
+        }
+        else
+        {
+            WorkResult.set(i, 0);
+        }
+    }
+    Result = WorkResult.to_ulong();
+    return Result;
+}
+
+inline uint8_t xor8bit(uint8_t Data1, uint8_t Data2)
+{
+    uint8_t Result = 0;
+    std::bitset<8> Work1 (Data1);
+    std::bitset<8> Work2 (Data2);
+    std::bitset<8> WorkResult (Result);
+    for (int i = 0; i != 8; i++)
+    {
+        if(Work1.test(i) != Work2.test(i))
+        {
+            WorkResult.set(i, 1);
+
+        }
+        else
+        {
+            WorkResult.set(i, 0);
+        }
+    }
+    Result = WorkResult.to_ulong();
+    return Result;
+}
+
 
 #endif // UTILITIES_H_INCLUDED

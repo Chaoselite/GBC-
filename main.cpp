@@ -4,7 +4,7 @@
 #include "MemoryModule.h"
 using namespace std;
 
-//TODO: add OPs 2f, 3f then continue to 80+
+//TODO: add OPs 80+ and CB OPs
 //Add MBC swapping
 //Add restart and interrupt vectors
 //Start VRAM interpreting

@@ -39,14 +39,14 @@ void CGB_CPU::Run(void)
 {
     while(isRunning)
     {
-        if(InterruptsEnabled)
+        if(InterruptWait)
         {
-            if(Interrupt)
-            {
-                ExecInterrupt(Interrupt);
-            }
+            //ExecInterrupt(Interrupt);
         }
-        ExecOP(Fetch());
+        else
+        {
+            ExecOP(Fetch());
+        }
     }
 }
 
@@ -463,6 +463,9 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x2f:
+        register[REG_TYPE::A] = xor8bit(register[REG_TYPE::A], 0xff);
+        SetFlag(Flags::fH, 1);
+        SetFlag(Flags::fN, 1);
 
     break;
 
@@ -521,6 +524,9 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x37:
+        SetFlag(Flags::fC, 1);
+        SetFlag(Flags::fH, 0);
+        SetFlag(Flags::fN, 0);
 
     break;
 
@@ -580,6 +586,16 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x3f:
+        SetFlag(Flags::fH, 0);
+        SetFlag(Flags::fN, 0);
+        if(GetFlag(Flags::fC))
+        {
+            SetFlag(Flags::fC, 0);
+        }
+        else
+        {
+            SetFlag(Flags::fC, 1);
+        }
 
     break;
 
@@ -881,7 +897,8 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x76:
-        //HALT
+        InterruptWait = 1;
+
     break;
 
     case 0x77:
@@ -936,7 +953,7 @@ void CGB_CPU::ExecOP(uint8_t OP)
 
     case 0xcb:
         std::cout << "CB OP" << std::endl;
-        isRunning = false;
+        ExecCBOP(Fetch());
     break;
 
     default :
