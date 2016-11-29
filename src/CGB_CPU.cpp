@@ -463,7 +463,7 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x2f:
-        register[REG_TYPE::A] = xor8bit(register[REG_TYPE::A], 0xff);
+        registers[REG_TYPE::A] = xor8bit(registers[REG_TYPE::A], 0xff);
         SetFlag(Flags::fH, 1);
         SetFlag(Flags::fN, 1);
 
@@ -949,6 +949,490 @@ void CGB_CPU::ExecOP(uint8_t OP)
     case 0x7f:
         data8h = registers[REG_TYPE::A];
         registers[REG_TYPE::A] = data8h;
+    break;
+
+    case 0x80:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::B];
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::ADD, data8h, data8l);
+
+    break;
+
+    case 0x81:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::C];
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::ADD, data8h, data8l);
+
+    break;
+
+    case 0x82:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::D];
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::ADD, data8h, data8l);
+
+    break;
+
+    case 0x83:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::E];
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::ADD, data8h, data8l);
+
+    break;
+
+    case 0x84:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::H];
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::ADD, data8h, data8l);
+
+    break;
+
+    case 0x85:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::L];
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::ADD, data8h, data8l);
+
+    break;
+
+    case 0x86:
+        data8h = registers[REG_TYPE::A];
+        data8l = Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]));
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::ADD, data8h, data8l);
+
+    break;
+
+    case 0x87:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::A];
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::ADD, data8h, data8l);
+
+    break;
+
+    case 0x88:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::B] + GetFlag(Flags::fC);
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::ADD, data8h, data8l);
+
+    break;
+
+    case 0x89:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::C] + GetFlag(Flags::fC);
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::ADD, data8h, data8l);
+
+    break;
+
+    case 0x8a:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::D] + GetFlag(Flags::fC);
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::ADD, data8h, data8l);
+
+    break;
+
+    case 0x8b:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::E] + GetFlag(Flags::fC);
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::ADD, data8h, data8l);
+
+    break;
+
+    case 0x8c:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::H] + GetFlag(Flags::fC);
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::ADD, data8h, data8l);
+
+    break;
+
+    case 0x8d:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::L] + GetFlag(Flags::fC);
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::ADD, data8h, data8l);
+
+    break;
+
+    case 0x8e:
+        data8h = registers[REG_TYPE::A];
+        data8l = Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L])) + GetFlag(Flags::fC);
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::ADD, data8h, data8l);
+
+    break;
+
+    case 0x8f:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::A] + GetFlag(Flags::fC);
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::ADD, data8h, data8l);
+
+    break;
+
+    case 0x90:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::B];
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::SUB, data8h, data8l);
+
+    break;
+
+    case 0x91:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::C];
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::SUB, data8h, data8l);
+
+    break;
+
+    case 0x92:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::D];
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::SUB, data8h, data8l);
+
+    break;
+
+    case 0x93:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::E];
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::SUB, data8h, data8l);
+
+    break;
+
+    case 0x94:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::H];
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::SUB, data8h, data8l);
+
+    break;
+
+    case 0x95:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::L];
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::SUB, data8h, data8l);
+
+    break;
+
+    case 0x96:
+        data8h = registers[REG_TYPE::A];
+        data8l = Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]));
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::SUB, data8h, data8l);
+
+    break;
+
+    case 0x97:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::A];
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::SUB, data8h, data8l);
+
+    break;
+
+    case 0x98:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::B] + GetFlag(Flags::fC);
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::SUB, data8h, data8l);
+
+    break;
+
+    case 0x99:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::C] + GetFlag(Flags::fC);
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::SUB, data8h, data8l);
+
+    break;
+
+    case 0x9a:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::D] + GetFlag(Flags::fC);
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::SUB, data8h, data8l);
+
+    break;
+
+    case 0x9b:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::E] + GetFlag(Flags::fC);
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::SUB, data8h, data8l);
+
+    break;
+
+    case 0x9c:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::H] + GetFlag(Flags::fC);
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::SUB, data8h, data8l);
+
+    break;
+
+    case 0x9d:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::L] + GetFlag(Flags::fC);
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::SUB, data8h, data8l);
+
+    break;
+
+    case 0x9e:
+        data8h = registers[REG_TYPE::A];
+        data8l = Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L])) + GetFlag(Flags::fC);
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::SUB, data8h, data8l);
+
+    break;
+
+    case 0x9f:
+        data8h = registers[REG_TYPE::A];
+        data8l = registers[REG_TYPE::A] + GetFlag(Flags::fC);
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::SUB, data8h, data8l);
+
+    break;
+
+    case 0xa0:
+        registers[REG_TYPE::A] = and8bit(registers[REG_TYPE::A], registers[REG_TYPE::B]);
+        SetFlag(Flags::fZ, (registers[REG_TYPE::A] == 0));
+        SetFlag(Flags::fH, 1);
+        SetFlag(Flags::fC, 0);
+        SetFlag(Flags::fN, 0);
+
+    break;
+
+    case 0xa1:
+        registers[REG_TYPE::A] = and8bit(registers[REG_TYPE::A], registers[REG_TYPE::C]);
+        SetFlag(Flags::fZ, (registers[REG_TYPE::A] == 0));
+        SetFlag(Flags::fH, 1);
+        SetFlag(Flags::fC, 0);
+        SetFlag(Flags::fN, 0);
+
+    break;
+
+    case 0xa2:
+        registers[REG_TYPE::A] = and8bit(registers[REG_TYPE::A], registers[REG_TYPE::D]);
+        SetFlag(Flags::fZ, (registers[REG_TYPE::A] == 0));
+        SetFlag(Flags::fH, 1);
+        SetFlag(Flags::fC, 0);
+        SetFlag(Flags::fN, 0);
+
+    break;
+
+    case 0xa3:
+        registers[REG_TYPE::A] = and8bit(registers[REG_TYPE::A], registers[REG_TYPE::E]);
+        SetFlag(Flags::fZ, (registers[REG_TYPE::A] == 0));
+        SetFlag(Flags::fH, 1);
+        SetFlag(Flags::fC, 0);
+        SetFlag(Flags::fN, 0);
+
+    break;
+
+    case 0xa4:
+        registers[REG_TYPE::A] = and8bit(registers[REG_TYPE::A], registers[REG_TYPE::H]);
+        SetFlag(Flags::fZ, (registers[REG_TYPE::A] == 0));
+        SetFlag(Flags::fH, 1);
+        SetFlag(Flags::fC, 0);
+        SetFlag(Flags::fN, 0);
+
+    break;
+
+    case 0xa5:
+        registers[REG_TYPE::A] = and8bit(registers[REG_TYPE::A], registers[REG_TYPE::L]);
+        SetFlag(Flags::fZ, (registers[REG_TYPE::A] == 0));
+        SetFlag(Flags::fH, 1);
+        SetFlag(Flags::fC, 0);
+        SetFlag(Flags::fN, 0);
+
+    break;
+
+    case 0xa6:
+        registers[REG_TYPE::A] = and8bit(registers[REG_TYPE::A],
+                                         Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L])));
+        SetFlag(Flags::fZ, (registers[REG_TYPE::A] == 0));
+        SetFlag(Flags::fH, 1);
+        SetFlag(Flags::fC, 0);
+        SetFlag(Flags::fN, 0);
+
+    break;
+
+    case 0xa7:
+        registers[REG_TYPE::A] = and8bit(registers[REG_TYPE::A], registers[REG_TYPE::A]);
+        SetFlag(Flags::fZ, (registers[REG_TYPE::A] == 0));
+        SetFlag(Flags::fH, 1);
+        SetFlag(Flags::fC, 0);
+        SetFlag(Flags::fN, 0);
+
+    break;
+
+    case 0xa8:
+        registers[REG_TYPE::A] = xor8bit(registers[REG_TYPE::A], registers[REG_TYPE::B]);
+        SetFlag(Flags::fZ, (registers[REG_TYPE::A] == 0));
+        SetFlag(Flags::fH, 0);
+        SetFlag(Flags::fC, 0);
+        SetFlag(Flags::fN, 0);
+
+    break;
+
+    case 0xa9:
+        registers[REG_TYPE::A] = xor8bit(registers[REG_TYPE::A], registers[REG_TYPE::C]);
+        SetFlag(Flags::fZ, (registers[REG_TYPE::A] == 0));
+        SetFlag(Flags::fH, 0);
+        SetFlag(Flags::fC, 0);
+        SetFlag(Flags::fN, 0);
+
+    break;
+
+    case 0xaa:
+        registers[REG_TYPE::A] = xor8bit(registers[REG_TYPE::A], registers[REG_TYPE::D]);
+        SetFlag(Flags::fZ, (registers[REG_TYPE::A] == 0));
+        SetFlag(Flags::fH, 0);
+        SetFlag(Flags::fC, 0);
+        SetFlag(Flags::fN, 0);
+
+    break;
+
+    case 0xab:
+        registers[REG_TYPE::A] = xor8bit(registers[REG_TYPE::A], registers[REG_TYPE::E]);
+        SetFlag(Flags::fZ, (registers[REG_TYPE::A] == 0));
+        SetFlag(Flags::fH, 0);
+        SetFlag(Flags::fC, 0);
+        SetFlag(Flags::fN, 0);
+
+    break;
+
+    case 0xac:
+        registers[REG_TYPE::A] = xor8bit(registers[REG_TYPE::A], registers[REG_TYPE::H]);
+        SetFlag(Flags::fZ, (registers[REG_TYPE::A] == 0));
+        SetFlag(Flags::fH, 0);
+        SetFlag(Flags::fC, 0);
+        SetFlag(Flags::fN, 0);
+
+    break;
+
+    case 0xad:
+        registers[REG_TYPE::A] = xor8bit(registers[REG_TYPE::A], registers[REG_TYPE::L]);
+        SetFlag(Flags::fZ, (registers[REG_TYPE::A] == 0));
+        SetFlag(Flags::fH, 0);
+        SetFlag(Flags::fC, 0);
+        SetFlag(Flags::fN, 0);
+
+    break;
+
+    case 0xae:
+        registers[REG_TYPE::A] = xor8bit(registers[REG_TYPE::A],
+                                         Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L])));
+        SetFlag(Flags::fZ, (registers[REG_TYPE::A] == 0));
+        SetFlag(Flags::fH, 0);
+        SetFlag(Flags::fC, 0);
+        SetFlag(Flags::fN, 0);
+
+    break;
+
+    case 0xaf:
+        registers[REG_TYPE::A] = xor8bit(registers[REG_TYPE::A], registers[REG_TYPE::A]);
+        SetFlag(Flags::fZ, (registers[REG_TYPE::A] == 0));
+        SetFlag(Flags::fH, 0);
+        SetFlag(Flags::fC, 0);
+        SetFlag(Flags::fN, 0);
+
+    break;
+
+    case 0xb0:
+        registers[REG_TYPE::A] = or8bit(registers[REG_TYPE::A], registers[REG_TYPE::B]);
+        SetFlag(Flags::fZ, (registers[REG_TYPE::A] == 0));
+        SetFlag(Flags::fH, 0);
+        SetFlag(Flags::fC, 0);
+        SetFlag(Flags::fN, 0);
+
+    break;
+
+    case 0xb1:
+        registers[REG_TYPE::A] = or8bit(registers[REG_TYPE::A], registers[REG_TYPE::C]);
+        SetFlag(Flags::fZ, (registers[REG_TYPE::A] == 0));
+        SetFlag(Flags::fH, 0);
+        SetFlag(Flags::fC, 0);
+        SetFlag(Flags::fN, 0);
+
+    break;
+
+    case 0xb2:
+        registers[REG_TYPE::A] = or8bit(registers[REG_TYPE::A], registers[REG_TYPE::D]);
+        SetFlag(Flags::fZ, (registers[REG_TYPE::A] == 0));
+        SetFlag(Flags::fH, 0);
+        SetFlag(Flags::fC, 0);
+        SetFlag(Flags::fN, 0);
+
+    break;
+
+    case 0xb3:
+        registers[REG_TYPE::A] = or8bit(registers[REG_TYPE::A], registers[REG_TYPE::E]);
+        SetFlag(Flags::fZ, (registers[REG_TYPE::A] == 0));
+        SetFlag(Flags::fH, 0);
+        SetFlag(Flags::fC, 0);
+        SetFlag(Flags::fN, 0);
+
+    break;
+
+    case 0xb4:
+        registers[REG_TYPE::A] = or8bit(registers[REG_TYPE::A], registers[REG_TYPE::H]);
+        SetFlag(Flags::fZ, (registers[REG_TYPE::A] == 0));
+        SetFlag(Flags::fH, 0);
+        SetFlag(Flags::fC, 0);
+        SetFlag(Flags::fN, 0);
+
+    break;
+
+    case 0xb5:
+        registers[REG_TYPE::A] = or8bit(registers[REG_TYPE::A], registers[REG_TYPE::L]);
+        SetFlag(Flags::fZ, (registers[REG_TYPE::A] == 0));
+        SetFlag(Flags::fH, 0);
+        SetFlag(Flags::fC, 0);
+        SetFlag(Flags::fN, 0);
+
+    break;
+
+    case 0xb6:
+        registers[REG_TYPE::A] = or8bit(registers[REG_TYPE::A],
+                                        Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L])));
+        SetFlag(Flags::fZ, (registers[REG_TYPE::A] == 0));
+        SetFlag(Flags::fH, 0);
+        SetFlag(Flags::fC, 0);
+        SetFlag(Flags::fN, 0);
+
+    break;
+
+    case 0xb7:
+        registers[REG_TYPE::A] = or8bit(registers[REG_TYPE::A], registers[REG_TYPE::A]);
+        SetFlag(Flags::fZ, (registers[REG_TYPE::A] == 0));
+        SetFlag(Flags::fH, 0);
+        SetFlag(Flags::fC, 0);
+        SetFlag(Flags::fN, 0);
+
+    break;
+
+    case 0xb8:
+        FlaggedOP(OPFlag::SUB, registers[REG_TYPE::A], registers[REG_TYPE::B]);
+
+    break;
+
+    case 0xb9:
+        FlaggedOP(OPFlag::SUB, registers[REG_TYPE::A], registers[REG_TYPE::C]);
+
+    break;
+
+    case 0xba:
+        FlaggedOP(OPFlag::SUB, registers[REG_TYPE::A], registers[REG_TYPE::D]);
+
+    break;
+
+    case 0xbb:
+        FlaggedOP(OPFlag::SUB, registers[REG_TYPE::A], registers[REG_TYPE::E]);
+
+    break;
+
+    case 0xbc:
+        FlaggedOP(OPFlag::SUB, registers[REG_TYPE::A], registers[REG_TYPE::H]);
+
+    break;
+
+    case 0xbd:
+        FlaggedOP(OPFlag::SUB, registers[REG_TYPE::A], registers[REG_TYPE::L]);
+
+    break;
+
+    case 0xbe:
+        FlaggedOP(OPFlag::SUB, registers[REG_TYPE::A],
+                               Memory->ReadFromAddress(concat16( registers[REG_TYPE::H],  registers[REG_TYPE::L])));
+
+    break;
+
+    case 0xbf:
+        FlaggedOP(OPFlag::SUB, registers[REG_TYPE::A], registers[REG_TYPE::A]);
+
     break;
 
     case 0xcb:
