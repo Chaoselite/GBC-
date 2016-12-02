@@ -209,7 +209,8 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x10:
-        //staph
+        isRunning = false;
+
     break;
 
     case 0x11:
@@ -1435,13 +1436,364 @@ void CGB_CPU::ExecOP(uint8_t OP)
 
     break;
 
+    case 0xc0:
+        if(!GetFlag(Flags::fZ))
+        {
+            Ret();
+        }
+
+    break;
+
+    case 0xc1:
+        registers[REG_TYPE::C] = StackPop();
+        registers[REG_TYPE::B] = StackPop();
+
+    break;
+
+    case 0xc2:
+        data8l = Fetch();
+        data8h = Fetch();
+        data16a = concat16(data8h, data8l);
+        if(!GetFlag(Flags::fZ))
+        {
+            PC = data16a;
+        }
+
+    break;
+
+    case 0xc3:
+        data8l = Fetch();
+        data8h = Fetch();
+        data16a = concat16(data8h, data8l);
+        PC = data16a;
+
+    break;
+
+    case 0xc4:
+        data8l = Fetch();
+        data8h = Fetch();
+        data16a = concat16(data8h, data8l);
+        if(!GetFlag(Flags::fZ))
+        {
+            Call(data16a);
+        }
+
+    break;
+
+    case 0xc5:
+        StackPush(registers[REG_TYPE::B]);
+        StackPush(registers[REG_TYPE::C]);
+    break;
+
+    case 0xc6:
+        data8h = fetch();
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::ADD, registers[REG_TYPE::A], data8h);
+
+    break;
+
+    case 0xc7:
+        Call(0x0000);
+
+    break;
+
+    case 0xc8:
+        if(GetFlag(Flags::fZ))
+        {
+            Ret();
+        }
+
+    break;
+
+    case 0xc9:
+        Ret();
+
+    break;
+
+    case 0xca:
+        data8l = Fetch();
+        data8h = Fetch();
+        data16a = concat16(data8h, data8l);
+        if(GetFlag(Flags::fZ))
+        {
+            PC = data16a;
+        }
+
+    break;
+
     case 0xcb:
         std::cout << "CB OP" << std::endl;
         ExecCBOP(Fetch());
     break;
 
-    default :
+    case 0xcc:
+        data8l = Fetch();
+        data8h = Fetch();
+        data16a = concat16(data8h, data8l);
+        if(GetFlag(Flags::fZ))
+        {
+            Call(data16a);
+        }
 
+    break;
+
+    case 0xcd:
+        data8l = Fetch();
+        data8h = Fetch();
+        data16a = concat16(data8h, data8l);
+        Call(data16a);
+
+    break;
+
+    case 0xce:
+        data8h = fetch();
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::ADD, registers[REG_TYPE::A], data8h + GetFlag(Flags::fC));
+
+    break;
+
+    case 0xcf:
+        Call(0x0008);
+
+    break;
+
+    case 0xd0:
+        if(!GetFlag(Flags::fC))
+        {
+            Ret();
+        }
+
+    break;
+
+    case 0xd1:
+        registers[REG_TYPE::E] = StackPop();
+        registers[REG_TYPE::D] = StackPop();
+
+    break;
+
+    case 0xd2:
+        data8l = Fetch();
+        data8h = Fetch();
+        data16a = concat16(data8h, data8l);
+        if(!GetFlag(Flags::fC))
+        {
+            PC = data16a;
+        }
+
+    break;
+
+    case 0xd4:
+        data8l = Fetch();
+        data8h = Fetch();
+        data16a = concat16(data8h, data8l);
+        if(!GetFlag(Flags::fC))
+        {
+            Call(data16a);
+        }
+
+    break;
+
+    case 0xd5:
+        StackPush(registers[REG_TYPE::D]);
+        StackPush(registers[REG_TYPE::E]);
+
+    break;
+
+    case 0xd6:
+        data8h = fetch();
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::SUB, registers[REG_TYPE::A], data8h);
+
+    break;
+
+    case 0xd7:
+        Call(0x0010);
+
+    break;
+
+    case 0xd8:
+        if(GetFlag(Flags::fC))
+        {
+            Ret();
+        }
+
+    break;
+
+    case 0xd9:
+        Ret();
+        SetInterrupt(1);
+
+    break;
+
+    case 0xda:
+        data8l = Fetch();
+        data8h = Fetch();
+        data16a = concat16(data8h, data8l);
+        if(GetFlag(Flags::fC))
+        {
+            PC = data16a;
+        }
+
+    break;
+
+    case 0xdc:
+        data8l = Fetch();
+        data8h = Fetch();
+        data16a = concat16(data8h, data8l);
+        if(GetFlag(Flags::fC))
+        {
+            Call(data16a);
+        }
+
+    break;
+
+    case 0xde:
+        data8h = fetch();
+        registers[REG_TYPE::A] = FlaggedOP(OPFlag::SUB, registers[REG_TYPE::A], data8h + GetFlag(Flags::fC));
+
+    break;
+
+    case 0xdf:
+        Call(0x0018);
+
+    break;
+
+    case 0xe0:
+
+    break;
+
+    case 0xe1:
+        registers[REG_TYPE::L] = StackPop();
+        registers[REG_TYPE::H] = StackPop();
+
+    break;
+
+    case 0xe2:
+
+    break;
+
+    case 0xe5:
+        StackPush(registers[REG_TYPE::H]);
+        StackPush(registers[REG_TYPE::L]);
+
+    break;
+
+    case 0xe6:
+        data8h = fetch();
+        registers[REG_TYPE::A] = and8bit(registers[REG_TYPE::A], data8h);
+        SetFlag(Flags::fZ, registers[REG_TYPE::A] == 0);
+        SetFlag(Flags::fH, 1);
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fC, 0);
+
+
+    break;
+
+    case 0xe7:
+        Call(0x0020);
+
+    break;
+
+    case 0xe8:
+        r8 = Fetch();
+        data8l = trunc8low(SP);
+        FlaggedOP(OPFlag::ADD, data8l, r8);
+        SetFlag(Flags::fZ, 0);
+        SetFlag(Flags::fN, 0);
+        SP = SP + r8;
+
+    break;
+
+    case 0xe9:
+        PC = concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]);
+
+    break;
+
+    case 0xea:
+
+    break;
+
+    case 0xee:
+        data8h = fetch();
+        registers[REG_TYPE::A] = xor8bit(registers[REG_TYPE::A], data8h);
+        SetFlag(Flags::fZ, registers[REG_TYPE::A] == 0);
+        SetFlag(Flags::fH, 0);
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fC, 0);
+
+    break;
+
+    case 0xef:
+        Call(0x0028);
+
+    break;
+
+    case 0xf0:
+
+    break;
+
+    case 0xf1:
+        registers[REG_TYPE::F] = StackPop();
+        registers[REG_TYPE::A] = StackPop();
+
+    break;
+
+    case 0xf2:
+
+    break;
+
+    case 0xf3:
+        SetInterrupt(0);
+
+    break;
+
+    case 0xf5:
+        StackPush(registers[REG_TYPE::A]);
+        StackPush(registers[REG_TYPE::F]);
+
+    break;
+
+    case 0xf6:
+        data8h = fetch();
+        registers[REG_TYPE::A] = or8bit(registers[REG_TYPE::A], data8h);
+        SetFlag(Flags::fZ, registers[REG_TYPE::A] == 0);
+        SetFlag(Flags::fH, 0);
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fC, 0);
+
+    break;
+
+    case 0xf7:
+        Call(0x0030);
+
+    break;
+
+    case 0xf8:
+
+    break;
+
+    case 0xf9:
+
+    break;
+
+    case 0xfa:
+
+    break;
+
+    case 0xfb:
+        SetInterrupt(1);
+
+    break;
+
+    case 0xfe:
+        data8h = fetch();
+        FlaggedOP(OPFlag::SUB, registers[REG_TYPE::A], data8h);
+
+    break;
+
+    case 0xff:
+        Call(0x0038);
+
+    break;
+
+    default :
         std::cout << "Invalid OP: " << OP << " at location: " << PC << std::endl;
         std::cin >> input;
     break;
@@ -1535,4 +1887,32 @@ bool CGB_CPU::GetFlag(Flags Flag)
         getbit8(registers[REG_TYPE::F], 4);
     }
     return Result;
+}
+
+void CGB_CPU::StackPush(uint8_t Data)
+{
+    Memory->WriteToAddress(SP, Data);
+    SP--;
+}
+
+uint8_t CGB_CPU::StackPop(void)
+{
+    SP++;
+    return Memory->ReadFromAddress(SP);
+}
+
+void CGB_CPU::Call(uint16_t Address)
+{
+    uint8_t PCh = trunc8high(PC);
+    uint8_t PCl = trunc8low(PC);
+    StackPush(PCh);
+    StackPush(PCl);
+    PC = Address;
+}
+
+void CGB_CPU::Ret(void)
+{
+    uint8_t PCl = StackPop();
+    uint8_t PCh = StackPop();
+    PC = concat16(PCh, PCl);
 }

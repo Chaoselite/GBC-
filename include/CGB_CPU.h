@@ -77,6 +77,16 @@ private:
 
     bool GetFlag(Flags Flag);
 
+    void StackPush(uint8_t Data);
+
+    uint8_t StackPop(void);
+
+    void Call(uint16_t Address);
+
+    void Ret(void);
+
+    void SetInterrupt(bool Value);
+
 };
 
 #endif // CGB_CPU_H
