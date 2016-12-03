@@ -57,6 +57,15 @@ inline uint8_t trunc4low(uint8_t Data)
     return Result;
 }
 
+inline uint8_t concat8(uint8_t High, uint8_t Low)
+{
+    uint8_t Result = 0;
+    Result = High << 4;
+    Result += Low;
+
+    return Result;
+}
+
 inline uint8_t or8bit(uint8_t Data1, uint8_t Data2)
 {
     uint8_t Result = 0;
