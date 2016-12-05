@@ -15,7 +15,7 @@ CGB_CPU::~CGB_CPU()
 void CGB_CPU::SetCartridge(char *Cart)
 {
     Cartridge = Cart;
-    Memory->LoadROMChunk(0x100, 32511, 0x100, Cartridge);//load header bank 1 and switchable
+    Memory->LoadROMChunk(0, 0x7fff, 0, Cartridge);//load header bank 1 and switchable
 }
 
 void CGB_CPU::LoadBIOS(std::string Filepath)
@@ -37,11 +37,13 @@ void CGB_CPU::LoadBIOS(std::string Filepath)
 
 void CGB_CPU::Run(void)
 {
+    PowerOnSetup();
     while(isRunning)
     {
         if(InterruptWait)
         {
             //ExecInterrupt(Interrupt);
+            InterruptWait = false;
         }
         else
         {
@@ -50,10 +52,50 @@ void CGB_CPU::Run(void)
     }
 }
 
+void CGB_CPU::PowerOnSetup(void)
+{
+    registers[REG_TYPE::A] = 0x11;
+    registers[REG_TYPE::F] = 0xb0;
+    registers[REG_TYPE::B] = 0x00;
+    registers[REG_TYPE::C] = 0x13;
+    registers[REG_TYPE::D] = 0x00;
+    registers[REG_TYPE::E] = 0xd8;
+    registers[REG_TYPE::H] = 0x01;
+    registers[REG_TYPE::L] = 0x4d;
+    Memory->WriteToAddress(0xff10, 0x80);
+    Memory->WriteToAddress(0xff11, 0xbf);
+    Memory->WriteToAddress(0xff12, 0xf3);
+    Memory->WriteToAddress(0xff14, 0xbf);
+    Memory->WriteToAddress(0xff16, 0x3f);
+    Memory->WriteToAddress(0xff19, 0xbf);
+    Memory->WriteToAddress(0xff1a, 0x7f);
+    Memory->WriteToAddress(0xff1b, 0xff);
+    Memory->WriteToAddress(0xff1c, 0x9f);
+    Memory->WriteToAddress(0xff1e, 0xbf);
+    Memory->WriteToAddress(0xff20, 0xff);
+    Memory->WriteToAddress(0xff23, 0xbf);
+    Memory->WriteToAddress(0xff24, 0xff);
+    Memory->WriteToAddress(0xff25, 0xf3);
+    Memory->WriteToAddress(0xff26, 0xf1);
+    Memory->WriteToAddress(0xff40, 0x91);
+    Memory->WriteToAddress(0xff47, 0xfc);
+    Memory->WriteToAddress(0xff48, 0xff);
+    Memory->WriteToAddress(0xff49, 0xff);
+}
+
 uint8_t CGB_CPU::Fetch(void)
 {
     uint8_t Data = Memory->ReadFromAddress(PC);
-    PC++;
+    std::cout << "Fetched data " << Data << " at address " << PC << std::endl;
+
+    if (PC > 0xffff)
+    {
+        assert(0);
+    }
+    else
+    {
+       PC++;
+    }
     return Data;
 }
 
@@ -209,7 +251,7 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x10:
-        isRunning = false;
+        InterruptWait = true;
 
     break;
 
@@ -1521,8 +1563,8 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0xcb:
-        std::cout << "CB OP" << std::endl;
         ExecCBOP(Fetch());
+
     break;
 
     case 0xcc:
@@ -2743,6 +2785,1158 @@ void CGB_CPU::ExecCBOP(uint8_t OP)
         SetFlag(Flags::fZ, !getbit8(data8h, 1));
         SetFlag(Flags::fN, 0);
         SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x50:
+        data8h = registers[REG_TYPE::B];
+        SetFlag(Flags::fZ, !getbit8(data8h, 2));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x51:
+        data8h = registers[REG_TYPE::C];
+        SetFlag(Flags::fZ, !getbit8(data8h, 2));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x52:
+        data8h = registers[REG_TYPE::D];
+        SetFlag(Flags::fZ, !getbit8(data8h, 2));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x53:
+        data8h = registers[REG_TYPE::E];
+        SetFlag(Flags::fZ, !getbit8(data8h, 2));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x54:
+        data8h = registers[REG_TYPE::H];
+        SetFlag(Flags::fZ, !getbit8(data8h, 2));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x55:
+        data8h = registers[REG_TYPE::L];
+        SetFlag(Flags::fZ, !getbit8(data8h, 2));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x56:
+        data8h = Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]));
+        SetFlag(Flags::fZ, !getbit8(data8h, 2));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x57:
+        data8h = registers[REG_TYPE::A];
+        SetFlag(Flags::fZ, !getbit8(data8h, 2));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x58:
+        data8h = registers[REG_TYPE::B];
+        SetFlag(Flags::fZ, !getbit8(data8h, 3));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x59:
+        data8h = registers[REG_TYPE::C];
+        SetFlag(Flags::fZ, !getbit8(data8h, 3));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x5a:
+        data8h = registers[REG_TYPE::D];
+        SetFlag(Flags::fZ, !getbit8(data8h, 3));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x5b:
+        data8h = registers[REG_TYPE::E];
+        SetFlag(Flags::fZ, !getbit8(data8h, 3));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x5c:
+        data8h = registers[REG_TYPE::H];
+        SetFlag(Flags::fZ, !getbit8(data8h, 3));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x5d:
+        data8h = registers[REG_TYPE::L];
+        SetFlag(Flags::fZ, !getbit8(data8h, 3));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x5e:
+        data8h = Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]));
+        SetFlag(Flags::fZ, !getbit8(data8h, 3));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x5f:
+        data8h = registers[REG_TYPE::A];
+        SetFlag(Flags::fZ, !getbit8(data8h, 3));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x60:
+        data8h = registers[REG_TYPE::B];
+        SetFlag(Flags::fZ, !getbit8(data8h, 4));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x61:
+        data8h = registers[REG_TYPE::C];
+        SetFlag(Flags::fZ, !getbit8(data8h, 4));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x62:
+        data8h = registers[REG_TYPE::D];
+        SetFlag(Flags::fZ, !getbit8(data8h, 4));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x63:
+        data8h = registers[REG_TYPE::E];
+        SetFlag(Flags::fZ, !getbit8(data8h, 4));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x64:
+        data8h = registers[REG_TYPE::H];
+        SetFlag(Flags::fZ, !getbit8(data8h, 4));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x65:
+        data8h = registers[REG_TYPE::L];
+        SetFlag(Flags::fZ, !getbit8(data8h, 4));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x66:
+        data8h = Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]));
+        SetFlag(Flags::fZ, !getbit8(data8h, 4));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x67:
+        data8h = registers[REG_TYPE::A];
+        SetFlag(Flags::fZ, !getbit8(data8h, 4));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x68:
+        data8h = registers[REG_TYPE::B];
+        SetFlag(Flags::fZ, !getbit8(data8h, 5));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x69:
+        data8h = registers[REG_TYPE::C];
+        SetFlag(Flags::fZ, !getbit8(data8h, 5));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x6a:
+        data8h = registers[REG_TYPE::D];
+        SetFlag(Flags::fZ, !getbit8(data8h, 5));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x6b:
+        data8h = registers[REG_TYPE::E];
+        SetFlag(Flags::fZ, !getbit8(data8h, 5));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x6c:
+        data8h = registers[REG_TYPE::H];
+        SetFlag(Flags::fZ, !getbit8(data8h, 5));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x6d:
+        data8h = registers[REG_TYPE::L];
+        SetFlag(Flags::fZ, !getbit8(data8h, 5));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x6e:
+        data8h = Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]));
+        SetFlag(Flags::fZ, !getbit8(data8h, 5));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x6f:
+        data8h = registers[REG_TYPE::A];
+        SetFlag(Flags::fZ, !getbit8(data8h, 5));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x70:
+        data8h = registers[REG_TYPE::B];
+        SetFlag(Flags::fZ, !getbit8(data8h, 6));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x71:
+        data8h = registers[REG_TYPE::C];
+        SetFlag(Flags::fZ, !getbit8(data8h, 6));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x72:
+        data8h = registers[REG_TYPE::D];
+        SetFlag(Flags::fZ, !getbit8(data8h, 6));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x73:
+        data8h = registers[REG_TYPE::E];
+        SetFlag(Flags::fZ, !getbit8(data8h, 6));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x74:
+        data8h = registers[REG_TYPE::H];
+        SetFlag(Flags::fZ, !getbit8(data8h, 6));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x75:
+        data8h = registers[REG_TYPE::L];
+        SetFlag(Flags::fZ, !getbit8(data8h, 6));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x76:
+        data8h = Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]));
+        SetFlag(Flags::fZ, !getbit8(data8h, 6));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x77:
+        data8h = registers[REG_TYPE::A];
+        SetFlag(Flags::fZ, !getbit8(data8h, 6));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x78:
+        data8h = registers[REG_TYPE::B];
+        SetFlag(Flags::fZ, !getbit8(data8h, 7));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x79:
+        data8h = registers[REG_TYPE::C];
+        SetFlag(Flags::fZ, !getbit8(data8h, 7));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x7a:
+        data8h = registers[REG_TYPE::D];
+        SetFlag(Flags::fZ, !getbit8(data8h, 7));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x7b:
+        data8h = registers[REG_TYPE::E];
+        SetFlag(Flags::fZ, !getbit8(data8h, 7));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x7c:
+        data8h = registers[REG_TYPE::H];
+        SetFlag(Flags::fZ, !getbit8(data8h, 7));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x7d:
+        data8h = registers[REG_TYPE::L];
+        SetFlag(Flags::fZ, !getbit8(data8h, 7));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x7e:
+        data8h = Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]));
+        SetFlag(Flags::fZ, !getbit8(data8h, 7));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x7f:
+        data8h = registers[REG_TYPE::A];
+        SetFlag(Flags::fZ, !getbit8(data8h, 7));
+        SetFlag(Flags::fN, 0);
+        SetFlag(Flags::fH, 1);
+
+    break;
+
+    case 0x80:
+        data8h = setbit8(registers[REG_TYPE::B], 0, 0);
+        registers[REG_TYPE::B] = data8h;
+
+    break;
+
+    case 0x81:
+        data8h = setbit8(registers[REG_TYPE::C], 0, 0);
+        registers[REG_TYPE::C] = data8h;
+
+    break;
+
+    case 0x82:
+        data8h = setbit8(registers[REG_TYPE::D], 0, 0);
+        registers[REG_TYPE::D] = data8h;
+
+    break;
+
+    case 0x83:
+        data8h = setbit8(registers[REG_TYPE::E], 0, 0);
+        registers[REG_TYPE::E] = data8h;
+
+    break;
+
+    case 0x84:
+        data8h = setbit8(registers[REG_TYPE::H], 0, 0);
+        registers[REG_TYPE::H] = data8h;
+
+    break;
+
+    case 0x85:
+        data8h = setbit8(registers[REG_TYPE::L], 0, 0);
+        registers[REG_TYPE::L] = data8h;
+
+    break;
+
+    case 0x86:
+        data8h = setbit8(Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L])), 0, 0);
+        Memory->WriteToAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]), data8h);
+
+    break;
+
+    case 0x87:
+        data8h = setbit8(registers[REG_TYPE::A], 0, 0);
+        registers[REG_TYPE::A] = data8h;
+
+    break;
+
+    case 0x88:
+        data8h = setbit8(registers[REG_TYPE::B], 1, 0);
+        registers[REG_TYPE::B] = data8h;
+
+    break;
+
+    case 0x89:
+        data8h = setbit8(registers[REG_TYPE::C], 1, 0);
+        registers[REG_TYPE::C] = data8h;
+
+    break;
+
+    case 0x8a:
+        data8h = setbit8(registers[REG_TYPE::D], 1, 0);
+        registers[REG_TYPE::D] = data8h;
+
+    break;
+
+    case 0x8b:
+        data8h = setbit8(registers[REG_TYPE::E], 1, 0);
+        registers[REG_TYPE::E] = data8h;
+
+    break;
+
+    case 0x8c:
+        data8h = setbit8(registers[REG_TYPE::H], 1, 0);
+        registers[REG_TYPE::H] = data8h;
+
+    break;
+
+    case 0x8d:
+        data8h = setbit8(registers[REG_TYPE::L], 1, 0);
+        registers[REG_TYPE::L] = data8h;
+
+    break;
+
+    case 0x8e:
+        data8h = setbit8(Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L])), 1, 0);
+        Memory->WriteToAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]), data8h);
+
+    break;
+
+    case 0x8f:
+        data8h = setbit8(registers[REG_TYPE::A], 1, 0);
+        registers[REG_TYPE::A] = data8h;
+
+    break;
+
+    case 0x90:
+        data8h = setbit8(registers[REG_TYPE::B], 2, 0);
+        registers[REG_TYPE::B] = data8h;
+
+    break;
+
+    case 0x91:
+        data8h = setbit8(registers[REG_TYPE::C], 2, 0);
+        registers[REG_TYPE::C] = data8h;
+
+    break;
+
+    case 0x92:
+        data8h = setbit8(registers[REG_TYPE::D], 2, 0);
+        registers[REG_TYPE::D] = data8h;
+
+    break;
+
+    case 0x93:
+        data8h = setbit8(registers[REG_TYPE::E], 2, 0);
+        registers[REG_TYPE::E] = data8h;
+
+    break;
+
+    case 0x94:
+        data8h = setbit8(registers[REG_TYPE::H], 2, 0);
+        registers[REG_TYPE::H] = data8h;
+
+    break;
+
+    case 0x95:
+        data8h = setbit8(registers[REG_TYPE::L], 2, 0);
+        registers[REG_TYPE::L] = data8h;
+
+    break;
+
+    case 0x96:
+        data8h = setbit8(Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L])), 2, 0);
+        Memory->WriteToAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]), data8h);
+
+    break;
+
+    case 0x97:
+        data8h = setbit8(registers[REG_TYPE::A], 2, 0);
+        registers[REG_TYPE::A] = data8h;
+
+    break;
+
+    case 0x98:
+        data8h = setbit8(registers[REG_TYPE::B], 3, 0);
+        registers[REG_TYPE::B] = data8h;
+
+    break;
+
+    case 0x99:
+        data8h = setbit8(registers[REG_TYPE::C], 3, 0);
+        registers[REG_TYPE::C] = data8h;
+
+    break;
+
+    case 0x9a:
+        data8h = setbit8(registers[REG_TYPE::D], 3, 0);
+        registers[REG_TYPE::D] = data8h;
+
+    break;
+
+    case 0x9b:
+        data8h = setbit8(registers[REG_TYPE::E], 3, 0);
+        registers[REG_TYPE::E] = data8h;
+
+    break;
+
+    case 0x9c:
+        data8h = setbit8(registers[REG_TYPE::H], 3, 0);
+        registers[REG_TYPE::H] = data8h;
+
+    break;
+
+    case 0x9d:
+        data8h = setbit8(registers[REG_TYPE::L], 3, 0);
+        registers[REG_TYPE::L] = data8h;
+
+    break;
+
+    case 0x9e:
+        data8h = setbit8(Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L])), 3, 0);
+        Memory->WriteToAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]), data8h);
+
+    break;
+
+    case 0x9f:
+        data8h = setbit8(registers[REG_TYPE::A], 3, 0);
+        registers[REG_TYPE::A] = data8h;
+
+    break;
+
+    case 0xa0:
+        data8h = setbit8(registers[REG_TYPE::B], 4, 0);
+        registers[REG_TYPE::B] = data8h;
+
+    break;
+
+    case 0xa1:
+        data8h = setbit8(registers[REG_TYPE::C], 4, 0);
+        registers[REG_TYPE::C] = data8h;
+
+    break;
+
+    case 0xa2:
+        data8h = setbit8(registers[REG_TYPE::D], 4, 0);
+        registers[REG_TYPE::D] = data8h;
+
+    break;
+
+    case 0xa3:
+        data8h = setbit8(registers[REG_TYPE::E], 4, 0);
+        registers[REG_TYPE::E] = data8h;
+
+    break;
+
+    case 0xa4:
+        data8h = setbit8(registers[REG_TYPE::H], 4, 0);
+        registers[REG_TYPE::H] = data8h;
+
+    break;
+
+    case 0xa5:
+        data8h = setbit8(registers[REG_TYPE::L], 4, 0);
+        registers[REG_TYPE::L] = data8h;
+
+    break;
+
+    case 0xa6:
+        data8h = setbit8(Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L])), 4, 0);
+        Memory->WriteToAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]), data8h);
+
+    break;
+
+    case 0xa7:
+        data8h = setbit8(registers[REG_TYPE::A], 4, 0);
+        registers[REG_TYPE::A] = data8h;
+
+    break;
+
+    case 0xa8:
+        data8h = setbit8(registers[REG_TYPE::B], 5, 0);
+        registers[REG_TYPE::B] = data8h;
+
+    break;
+
+    case 0xa9:
+        data8h = setbit8(registers[REG_TYPE::C], 5, 0);
+        registers[REG_TYPE::C] = data8h;
+
+    break;
+
+    case 0xaa:
+        data8h = setbit8(registers[REG_TYPE::D], 5, 0);
+        registers[REG_TYPE::D] = data8h;
+
+    break;
+
+    case 0xab:
+        data8h = setbit8(registers[REG_TYPE::E], 5, 0);
+        registers[REG_TYPE::E] = data8h;
+
+    break;
+
+    case 0xac:
+        data8h = setbit8(registers[REG_TYPE::H], 5, 0);
+        registers[REG_TYPE::H] = data8h;
+
+    break;
+
+    case 0xad:
+        data8h = setbit8(registers[REG_TYPE::L], 5, 0);
+        registers[REG_TYPE::L] = data8h;
+
+    break;
+
+    case 0xae:
+        data8h = setbit8(Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L])), 5, 0);
+        Memory->WriteToAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]), data8h);
+
+    break;
+
+    case 0xaf:
+        data8h = setbit8(registers[REG_TYPE::A], 5, 0);
+        registers[REG_TYPE::A] = data8h;
+
+    break;
+
+    case 0xb0:
+        data8h = setbit8(registers[REG_TYPE::B], 6, 0);
+        registers[REG_TYPE::B] = data8h;
+
+    break;
+
+    case 0xb1:
+        data8h = setbit8(registers[REG_TYPE::C], 6, 0);
+        registers[REG_TYPE::C] = data8h;
+
+    break;
+
+    case 0xb2:
+        data8h = setbit8(registers[REG_TYPE::D], 6, 0);
+        registers[REG_TYPE::D] = data8h;
+
+    break;
+
+    case 0xb3:
+        data8h = setbit8(registers[REG_TYPE::E], 6, 0);
+        registers[REG_TYPE::E] = data8h;
+
+    break;
+
+    case 0xb4:
+        data8h = setbit8(registers[REG_TYPE::H], 6, 0);
+        registers[REG_TYPE::H] = data8h;
+
+    break;
+
+    case 0xb5:
+        data8h = setbit8(registers[REG_TYPE::L], 6, 0);
+        registers[REG_TYPE::L] = data8h;
+
+    break;
+
+    case 0xb6:
+        data8h = setbit8(Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L])), 6, 0);
+        Memory->WriteToAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]), data8h);
+
+    break;
+
+    case 0xb7:
+        data8h = setbit8(registers[REG_TYPE::A], 6, 0);
+        registers[REG_TYPE::A] = data8h;
+
+    break;
+
+    case 0xb8:
+        data8h = setbit8(registers[REG_TYPE::B], 7, 0);
+        registers[REG_TYPE::B] = data8h;
+
+    break;
+
+    case 0xb9:
+        data8h = setbit8(registers[REG_TYPE::C], 7, 0);
+        registers[REG_TYPE::C] = data8h;
+
+    break;
+
+    case 0xba:
+        data8h = setbit8(registers[REG_TYPE::D], 7, 0);
+        registers[REG_TYPE::D] = data8h;
+
+    break;
+
+    case 0xbb:
+        data8h = setbit8(registers[REG_TYPE::E], 7, 0);
+        registers[REG_TYPE::E] = data8h;
+
+    break;
+
+    case 0xbc:
+        data8h = setbit8(registers[REG_TYPE::H], 7, 0);
+        registers[REG_TYPE::H] = data8h;
+
+    break;
+
+    case 0xbd:
+        data8h = setbit8(registers[REG_TYPE::L], 7, 0);
+        registers[REG_TYPE::L] = data8h;
+
+    break;
+
+    case 0xbe:
+        data8h = setbit8(Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L])), 7, 0);
+        Memory->WriteToAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]), data8h);
+
+    break;
+
+    case 0xbf:
+        data8h = setbit8(registers[REG_TYPE::A], 7, 0);
+        registers[REG_TYPE::A] = data8h;
+
+    break;
+
+    case 0xc0:
+        data8h = setbit8(registers[REG_TYPE::B], 0, 1);
+        registers[REG_TYPE::B] = data8h;
+
+    break;
+
+    case 0xc1:
+        data8h = setbit8(registers[REG_TYPE::C], 0, 1);
+        registers[REG_TYPE::C] = data8h;
+
+    break;
+
+    case 0xc2:
+        data8h = setbit8(registers[REG_TYPE::D], 0, 1);
+        registers[REG_TYPE::D] = data8h;
+
+    break;
+
+    case 0xc3:
+        data8h = setbit8(registers[REG_TYPE::E], 0, 1);
+        registers[REG_TYPE::E] = data8h;
+
+    break;
+
+    case 0xc4:
+        data8h = setbit8(registers[REG_TYPE::H], 0, 1);
+        registers[REG_TYPE::H] = data8h;
+
+    break;
+
+    case 0xc5:
+        data8h = setbit8(registers[REG_TYPE::L], 0, 1);
+        registers[REG_TYPE::L] = data8h;
+
+    break;
+
+    case 0xc6:
+        data8h = setbit8(Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L])), 0, 1);
+        Memory->WriteToAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]), data8h);
+
+    break;
+
+    case 0xc7:
+        data8h = setbit8(registers[REG_TYPE::A], 0, 1);
+        registers[REG_TYPE::A] = data8h;
+
+    break;
+
+    case 0xc8:
+        data8h = setbit8(registers[REG_TYPE::B], 1, 1);
+        registers[REG_TYPE::B] = data8h;
+
+    break;
+
+    case 0xc9:
+        data8h = setbit8(registers[REG_TYPE::C], 1, 1);
+        registers[REG_TYPE::C] = data8h;
+
+    break;
+
+    case 0xca:
+        data8h = setbit8(registers[REG_TYPE::D], 1, 1);
+        registers[REG_TYPE::D] = data8h;
+
+    break;
+
+    case 0xcb:
+        data8h = setbit8(registers[REG_TYPE::E], 1, 1);
+        registers[REG_TYPE::E] = data8h;
+
+    break;
+
+    case 0xcc:
+        data8h = setbit8(registers[REG_TYPE::H], 1, 1);
+        registers[REG_TYPE::H] = data8h;
+
+    break;
+
+    case 0xcd:
+        data8h = setbit8(registers[REG_TYPE::L], 1, 1);
+        registers[REG_TYPE::L] = data8h;
+
+    break;
+
+    case 0xce:
+        data8h = setbit8(Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L])), 1, 1);
+        Memory->WriteToAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]), data8h);
+
+    break;
+
+    case 0xcf:
+        data8h = setbit8(registers[REG_TYPE::A], 1, 1);
+        registers[REG_TYPE::A] = data8h;
+
+    break;
+
+    case 0xd0:
+        data8h = setbit8(registers[REG_TYPE::B], 2, 1);
+        registers[REG_TYPE::B] = data8h;
+
+    break;
+
+    case 0xd1:
+        data8h = setbit8(registers[REG_TYPE::C], 2, 1);
+        registers[REG_TYPE::C] = data8h;
+
+    break;
+
+    case 0xd2:
+        data8h = setbit8(registers[REG_TYPE::D], 2, 1);
+        registers[REG_TYPE::D] = data8h;
+
+    break;
+
+    case 0xd3:
+        data8h = setbit8(registers[REG_TYPE::E], 2, 1);
+        registers[REG_TYPE::E] = data8h;
+
+    break;
+
+    case 0xd4:
+        data8h = setbit8(registers[REG_TYPE::H], 2, 1);
+        registers[REG_TYPE::H] = data8h;
+
+    break;
+
+    case 0xd5:
+        data8h = setbit8(registers[REG_TYPE::L], 2, 1);
+        registers[REG_TYPE::L] = data8h;
+
+    break;
+
+    case 0xd6:
+        data8h = setbit8(Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L])), 2, 1);
+        Memory->WriteToAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]), data8h);
+
+    break;
+
+    case 0xd7:
+        data8h = setbit8(registers[REG_TYPE::A], 2, 1);
+        registers[REG_TYPE::A] = data8h;
+
+    break;
+
+    case 0xd8:
+        data8h = setbit8(registers[REG_TYPE::B], 3, 1);
+        registers[REG_TYPE::B] = data8h;
+
+    break;
+
+    case 0xd9:
+        data8h = setbit8(registers[REG_TYPE::C], 3, 1);
+        registers[REG_TYPE::C] = data8h;
+
+    break;
+
+    case 0xda:
+        data8h = setbit8(registers[REG_TYPE::D], 3, 1);
+        registers[REG_TYPE::D] = data8h;
+
+    break;
+
+    case 0xdb:
+        data8h = setbit8(registers[REG_TYPE::E], 3, 1);
+        registers[REG_TYPE::E] = data8h;
+
+    break;
+
+    case 0xdc:
+        data8h = setbit8(registers[REG_TYPE::H], 3, 1);
+        registers[REG_TYPE::H] = data8h;
+
+    break;
+
+    case 0xdd:
+        data8h = setbit8(registers[REG_TYPE::L], 3, 1);
+        registers[REG_TYPE::L] = data8h;
+
+    break;
+
+    case 0xde:
+        data8h = setbit8(Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L])), 3, 1);
+        Memory->WriteToAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]), data8h);
+
+    break;
+
+    case 0xdf:
+        data8h = setbit8(registers[REG_TYPE::A], 3, 1);
+        registers[REG_TYPE::A] = data8h;
+
+    break;
+
+    case 0xe0:
+        data8h = setbit8(registers[REG_TYPE::B], 4, 1);
+        registers[REG_TYPE::B] = data8h;
+
+    break;
+
+    case 0xe1:
+        data8h = setbit8(registers[REG_TYPE::C], 4, 1);
+        registers[REG_TYPE::C] = data8h;
+
+    break;
+
+    case 0xe2:
+        data8h = setbit8(registers[REG_TYPE::D], 4, 1);
+        registers[REG_TYPE::D] = data8h;
+
+    break;
+
+    case 0xe3:
+        data8h = setbit8(registers[REG_TYPE::E], 4, 1);
+        registers[REG_TYPE::E] = data8h;
+
+    break;
+
+    case 0xe4:
+        data8h = setbit8(registers[REG_TYPE::H], 4, 1);
+        registers[REG_TYPE::H] = data8h;
+
+    break;
+
+    case 0xe5:
+        data8h = setbit8(registers[REG_TYPE::L], 4, 1);
+        registers[REG_TYPE::L] = data8h;
+
+    break;
+
+    case 0xe6:
+        data8h = setbit8(Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L])), 4, 1);
+        Memory->WriteToAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]), data8h);
+
+    break;
+
+    case 0xe7:
+        data8h = setbit8(registers[REG_TYPE::A], 4, 1);
+        registers[REG_TYPE::A] = data8h;
+
+    break;
+
+    case 0xe8:
+        data8h = setbit8(registers[REG_TYPE::B], 5, 1);
+        registers[REG_TYPE::B] = data8h;
+
+    break;
+
+    case 0xe9:
+        data8h = setbit8(registers[REG_TYPE::C], 5, 1);
+        registers[REG_TYPE::C] = data8h;
+
+    break;
+
+    case 0xea:
+        data8h = setbit8(registers[REG_TYPE::D], 5, 1);
+        registers[REG_TYPE::D] = data8h;
+
+    break;
+
+    case 0xeb:
+        data8h = setbit8(registers[REG_TYPE::E], 5, 1);
+        registers[REG_TYPE::E] = data8h;
+
+    break;
+
+    case 0xec:
+        data8h = setbit8(registers[REG_TYPE::H], 5, 1);
+        registers[REG_TYPE::H] = data8h;
+
+    break;
+
+    case 0xed:
+        data8h = setbit8(registers[REG_TYPE::L], 5, 1);
+        registers[REG_TYPE::L] = data8h;
+
+    break;
+
+    case 0xee:
+        data8h = setbit8(Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L])), 5, 1);
+        Memory->WriteToAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]), data8h);
+
+    break;
+
+    case 0xef:
+        data8h = setbit8(registers[REG_TYPE::A], 5, 1);
+        registers[REG_TYPE::A] = data8h;
+
+    break;
+
+    case 0xf0:
+        data8h = setbit8(registers[REG_TYPE::B], 6, 1);
+        registers[REG_TYPE::B] = data8h;
+
+    break;
+
+    case 0xf1:
+        data8h = setbit8(registers[REG_TYPE::C], 6, 1);
+        registers[REG_TYPE::C] = data8h;
+
+    break;
+
+    case 0xf2:
+        data8h = setbit8(registers[REG_TYPE::D], 6, 1);
+        registers[REG_TYPE::D] = data8h;
+
+    break;
+
+    case 0xf3:
+        data8h = setbit8(registers[REG_TYPE::E], 6, 1);
+        registers[REG_TYPE::E] = data8h;
+
+    break;
+
+    case 0xf4:
+        data8h = setbit8(registers[REG_TYPE::H], 6, 1);
+        registers[REG_TYPE::H] = data8h;
+
+    break;
+
+    case 0xf5:
+        data8h = setbit8(registers[REG_TYPE::L], 6, 1);
+        registers[REG_TYPE::L] = data8h;
+
+    break;
+
+    case 0xf6:
+        data8h = setbit8(Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L])), 6, 1);
+        Memory->WriteToAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]), data8h);
+
+    break;
+
+    case 0xf7:
+        data8h = setbit8(registers[REG_TYPE::A], 6, 1);
+        registers[REG_TYPE::A] = data8h;
+
+    break;
+
+    case 0xf8:
+        data8h = setbit8(registers[REG_TYPE::B], 7, 1);
+        registers[REG_TYPE::B] = data8h;
+
+    break;
+
+    case 0xf9:
+        data8h = setbit8(registers[REG_TYPE::C], 7, 1);
+        registers[REG_TYPE::C] = data8h;
+
+    break;
+
+    case 0xfa:
+        data8h = setbit8(registers[REG_TYPE::D], 7, 1);
+        registers[REG_TYPE::D] = data8h;
+
+    break;
+
+    case 0xfb:
+        data8h = setbit8(registers[REG_TYPE::E], 7, 1);
+        registers[REG_TYPE::E] = data8h;
+
+    break;
+
+    case 0xfc:
+        data8h = setbit8(registers[REG_TYPE::H], 7, 1);
+        registers[REG_TYPE::H] = data8h;
+
+    break;
+
+    case 0xfd:
+        data8h = setbit8(registers[REG_TYPE::L], 7, 1);
+        registers[REG_TYPE::L] = data8h;
+
+    break;
+
+    case 0xfe:
+        data8h = setbit8(Memory->ReadFromAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L])), 7, 1);
+        Memory->WriteToAddress(concat16(registers[REG_TYPE::H], registers[REG_TYPE::L]), data8h);
+
+    break;
+
+    case 0xff:
+        data8h = setbit8(registers[REG_TYPE::A], 7, 1);
+        registers[REG_TYPE::A] = data8h;
 
     break;
 

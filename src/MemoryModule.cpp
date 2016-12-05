@@ -10,21 +10,30 @@ MemoryModule::~MemoryModule()
     delete [] Memory;
 }
 
-char MemoryModule::ReadFromAddress(int16_t Address)
+char MemoryModule::ReadFromAddress(uint16_t Address)
 {
     return Memory[Address];
 }
 
-void MemoryModule::WriteToAddress(int16_t Address, char Data)
+void MemoryModule::WriteToAddress(uint16_t Address, char Data)
 {
-    Memory[Address] = Data;
+    std::cout << "Writing to " << Address << std::endl;
+
+    if(Address > 0x4000 && Address < 0x7fff)
+    {
+        std::cout << "MBC switch to bank " << Data << std::endl;
+    }
+    else
+    {
+        Memory[Address] = Data;
+    }
 }
 
-void MemoryModule::LoadROMChunk(int16_t Position, int16_t Size, int16_t DataPosition, char *Data)
+void MemoryModule::LoadROMChunk(uint16_t Position, uint16_t Size, uint16_t DataPosition, char *Data)
 {
-    int16_t ReadData = 0;
-    int16_t CurrentPosition = Position;
-    int16_t CurrentDataPosition = DataPosition;
+    uint16_t ReadData = 0;
+    uint16_t CurrentPosition = Position;
+    uint16_t CurrentDataPosition = DataPosition;
 
     while(ReadData != Size)
     {
@@ -35,7 +44,7 @@ void MemoryModule::LoadROMChunk(int16_t Position, int16_t Size, int16_t DataPosi
     }
 }
 
-void MemoryModule::ROMBankSwap(int16_t DataPosition, char *Data)
+void MemoryModule::ROMBankSwap(uint16_t DataPosition, char *Data)
 {
     LoadROMChunk(0x4000, 16383, DataPosition, Data);
 }

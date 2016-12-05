@@ -4,6 +4,7 @@
 #include <iostream>
 #include "Utilities.h"
 #include "MemoryModule.h"
+#include "assert.h"
 
 enum REG_TYPE
 {
@@ -47,6 +48,8 @@ private:
 
     bool InterruptWait = 0;
 
+    void PowerOnSetup(void);
+
     uint8_t Fetch(void);
 
     bool ExecInterrupt(uint8_t Interrupt);
@@ -57,7 +60,7 @@ private:
 
     uint16_t SP        =0xfffe;
 
-    uint16_t PC        =0x0150;
+    uint16_t PC        =0x100;
 
     char registers[7]   ={0};
 

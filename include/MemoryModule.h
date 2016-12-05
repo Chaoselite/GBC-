@@ -9,13 +9,13 @@ public:
     MemoryModule(const unsigned Size);
     virtual ~MemoryModule();
 
-    char ReadFromAddress(int16_t Address);
+    char ReadFromAddress(uint16_t Address);
 
-    void WriteToAddress(int16_t Address, char Data);
+    void WriteToAddress(uint16_t Address, char Data);
 
-    void LoadROMChunk(int16_t Position, int16_t Size, int16_t DataPosition, char *Data);
+    void LoadROMChunk(uint16_t Position, uint16_t Size, uint16_t DataPosition, char *Data);
 
-    void ROMBankSwap(int16_t DataPosition, char *Data);
+    void ROMBankSwap(uint16_t DataPosition, char *Data);
 
 private:
 
