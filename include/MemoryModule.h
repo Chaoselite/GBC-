@@ -15,9 +15,13 @@ public:
 
     void LoadROMChunk(uint16_t Position, uint16_t Size, uint16_t DataPosition, char *Data);
 
-    void ROMBankSwap(uint16_t DataPosition, char *Data);
+    void ROMBankSwap(uint8_t DataPosition);
+
+    void SetCartridge(char *Cart);
 
 private:
+
+    char *Cartridge;
 
     char *Memory;
 

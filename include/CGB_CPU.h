@@ -18,6 +18,15 @@ enum REG_TYPE
     L
 };
 
+enum INT_TYPE
+{
+    VBlank,
+    LCDSTAT,
+    Timer,
+    Serial,
+    Joypad
+};
+
 enum OPFlag
 {
     ADD,
@@ -46,13 +55,13 @@ public:
 
 private:
 
-    bool InterruptWait = 0;
+    bool IME = 0;
 
     void PowerOnSetup(void);
 
     uint8_t Fetch(void);
 
-    bool ExecInterrupt(uint8_t Interrupt);
+    void ExecInterrupt(void);
 
     void ExecOP(uint8_t OP);
 
@@ -88,7 +97,13 @@ private:
 
     void Ret(void);
 
-    void SetInterrupt(bool Value);
+    void SetInterrupt(INT_TYPE INT, bool Value);
+
+    void EnableInterrupt(INT_TYPE INT, bool Value);
+
+    bool GetInterrupt(INT_TYPE INT);
+
+    bool IsEnableInterrupt(INT_TYPE INT);
 
 };
 

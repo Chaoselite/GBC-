@@ -40,14 +40,11 @@ void CGB_CPU::Run(void)
     PowerOnSetup();
     while(isRunning)
     {
-        if(InterruptWait)
+        ExecOP(Fetch());
+
+        if(IME)
         {
-            //ExecInterrupt(Interrupt);
-            InterruptWait = false;
-        }
-        else
-        {
-            ExecOP(Fetch());
+            ExecInterrupt();
         }
     }
 }
@@ -99,9 +96,53 @@ uint8_t CGB_CPU::Fetch(void)
     return Data;
 }
 
-bool CGB_CPU::ExecInterrupt(uint8_t Interrupt)
+void CGB_CPU::ExecInterrupt(void)
 {
-
+    if(GetInterrupt(INT_TYPE::VBlank))
+    {
+        if(IsEnableInterrupt(INT_TYPE::VBlank))
+        {
+            IME = false;
+            SetInterrupt(INT_TYPE::VBlank, 0);
+            Call(0x0040);
+        }
+    }
+    else if(GetInterrupt(INT_TYPE::LCDSTAT))
+    {
+        if(IsEnableInterrupt(INT_TYPE::LCDSTAT))
+        {
+            IME = false;
+            SetInterrupt(INT_TYPE::LCDSTAT, 0);
+            Call(0x0048);
+        }
+    }
+    else if(GetInterrupt(INT_TYPE::Timer))
+    {
+        if(IsEnableInterrupt(INT_TYPE::Timer))
+        {
+            IME = false;
+            SetInterrupt(INT_TYPE::Timer, 0);
+            Call(0x0050);
+        }
+    }
+    else if(GetInterrupt(INT_TYPE::Serial))
+    {
+        if(IsEnableInterrupt(INT_TYPE::Serial))
+        {
+            IME = false;
+            SetInterrupt(INT_TYPE::Serial, 0);
+            Call(0x0058);
+        }
+    }
+    else if(GetInterrupt(INT_TYPE::Joypad))
+    {
+        if(IsEnableInterrupt(INT_TYPE::Joypad))
+        {
+            IME = false;
+            SetInterrupt(INT_TYPE::Joypad, 0);
+            Call(0x0060);
+        }
+    }
 }
 
 void CGB_CPU::ExecOP(uint8_t OP)
@@ -251,7 +292,7 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x10:
-        InterruptWait = true;
+        IME = true;
 
     break;
 
@@ -940,7 +981,7 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0x76:
-        InterruptWait = 1;
+        IME = 1;
 
     break;
 
@@ -1660,7 +1701,7 @@ void CGB_CPU::ExecOP(uint8_t OP)
 
     case 0xd9:
         Ret();
-        SetInterrupt(1);
+        IME = 1;
 
     break;
 
@@ -1798,7 +1839,7 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0xf3:
-        SetInterrupt(0);
+        IME = 0;
 
     break;
 
@@ -1847,7 +1888,7 @@ void CGB_CPU::ExecOP(uint8_t OP)
     break;
 
     case 0xfb:
-        SetInterrupt(1);
+        IME = 1;
 
     break;
 
@@ -4060,7 +4101,158 @@ void CGB_CPU::Ret(void)
     PC = concat16(PCh, PCl);
 }
 
-void CGB_CPU::SetInterrupt(bool Value)
+void CGB_CPU::SetInterrupt(INT_TYPE INT, bool Value)
 {
+    uint8_t IF = Memory->ReadFromAddress(0xff0f);
+
+    switch(INT)
+    {
+        case INT_TYPE::VBlank:
+            IF = setbit8(IF, 0, Value);
+
+        break;
+
+        case INT_TYPE::LCDSTAT:
+            IF = setbit8(IF, 1, Value);
+
+        break;
+
+        case INT_TYPE::Timer:
+            IF = setbit8(IF, 2, Value);
+
+        break;
+
+        case INT_TYPE::Serial:
+            IF = setbit8(IF, 3, Value);
+
+        break;
+
+        case INT_TYPE::Joypad:
+            IF = setbit8(IF, 4, Value);
+
+        break;
+
+        default:
+
+        break;
+    }
+    Memory->WriteToAddress(0xff0f, IF);
+}
+
+void CGB_CPU::EnableInterrupt(INT_TYPE INT, bool Value)
+{
+    uint8_t IE = Memory->ReadFromAddress(0xffff);
+
+    switch(INT)
+    {
+        case INT_TYPE::VBlank:
+            IE = setbit8(IE, 0, 1);
+
+        break;
+
+        case INT_TYPE::LCDSTAT:
+            IE = setbit8(IE, 1, 1);
+
+        break;
+
+        case INT_TYPE::Timer:
+            IE = setbit8(IE, 2, 1);
+
+        break;
+
+        case INT_TYPE::Serial:
+            IE = setbit8(IE, 3, 1);
+
+        break;
+
+        case INT_TYPE::Joypad:
+            IE = setbit8(IE, 4, 1);
+
+        break;
+
+        default:
+
+        break;
+    }
+}
+
+bool CGB_CPU::GetInterrupt(INT_TYPE INT)
+{
+    uint8_t IF = Memory->ReadFromAddress(0xff0f);
+    bool Result = 0;
+
+    switch(INT)
+    {
+        case INT_TYPE::VBlank:
+            Result = getbit8(IF, 0);
+
+        break;
+
+        case INT_TYPE::LCDSTAT:
+            Result = getbit8(IF, 1);
+
+        break;
+
+        case INT_TYPE::Timer:
+            Result = getbit8(IF, 2);
+
+        break;
+
+        case INT_TYPE::Serial:
+            Result = getbit8(IF, 3);
+
+        break;
+
+        case INT_TYPE::Joypad:
+            Result = getbit8(IF, 4);
+
+        break;
+
+        default:
+
+        break;
+    }
+
+    return Result;
+}
+
+bool CGB_CPU::IsEnableInterrupt(INT_TYPE INT)
+{
+    uint8_t IE = Memory->ReadFromAddress(0xffff);
+    bool Result = 0;
+
+    switch(INT)
+    {
+        case INT_TYPE::VBlank:
+            Result = getbit8(IE, 0);
+
+        break;
+
+        case INT_TYPE::LCDSTAT:
+            Result = getbit8(IE, 1);
+
+        break;
+
+        case INT_TYPE::Timer:
+            Result = getbit8(IE, 2);
+
+        break;
+
+        case INT_TYPE::Serial:
+            Result = getbit8(IE, 3);
+
+        break;
+
+        case INT_TYPE::Joypad:
+            Result = getbit8(IE, 4);
+
+        break;
+
+        default:
+
+        break;
+    }
+    return Result;
 
 }
+

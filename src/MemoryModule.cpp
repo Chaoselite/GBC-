@@ -18,10 +18,12 @@ char MemoryModule::ReadFromAddress(uint16_t Address)
 void MemoryModule::WriteToAddress(uint16_t Address, char Data)
 {
     std::cout << "Writing to " << Address << std::endl;
-
+    int i;
     if(Address > 0x4000 && Address < 0x7fff)
     {
+        ROMBankSwap(Data);
         std::cout << "MBC switch to bank " << Data << std::endl;
+        std::cin >> i;
     }
     else
     {
@@ -44,8 +46,13 @@ void MemoryModule::LoadROMChunk(uint16_t Position, uint16_t Size, uint16_t DataP
     }
 }
 
-void MemoryModule::ROMBankSwap(uint16_t DataPosition, char *Data)
+void MemoryModule::ROMBankSwap(uint8_t DataPosition)
 {
-    LoadROMChunk(0x4000, 16383, DataPosition, Data);
+    LoadROMChunk(0x4000, 16383, (DataPosition * 16383), Cartridge);
+}
+
+void MemoryModule::SetCartridge(char *Cart)
+{
+    Cartridge = Cart;
 }
 

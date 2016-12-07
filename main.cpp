@@ -4,9 +4,7 @@
 #include "MemoryModule.h"
 using namespace std;
 
-//TODO: add CB OPs
-//Add MBC swapping
-//Add restart and interrupt vectors
+//TODO: Add restart and interrupt vectors
 //Start VRAM interpreting
 
 int main()
